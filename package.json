@@ -1,0 +1,12 @@
+{
+  "name": "sonic-music-app",
+  "version": "1.0.0",
+  "description": "SONiC - Real-time Full-Length Lossless Music Streaming & Offline Web Player",
+  "main": "server.cjs",
+  "scripts": {
+    "start": "node server.cjs"
+  },
+  "keywords": ["music", "spotify-clone", "audio", "streaming"],
+  "author": "Vishal",
+  "license": "MIT"
+}
