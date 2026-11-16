@@ -1901,8 +1901,116 @@ html, body {
 
 
 @media (max-width: 768px) {
+  /* SPOTIFY MOBILE FOOTER (Instagram, Developers, Support, About) */
   .spotify-catalog-footer {
-    display: none !important;
+    display: block !important;
+    opacity: 1 !important;
+    transform: none !important;
+    padding: 32px 16px 140px 16px !important;
+    margin-top: 36px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: transparent !important;
+    box-sizing: border-box !important;
+  }
+
+  .footer-columns {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 24px !important;
+    width: 100% !important;
+  }
+
+  .footer-col {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .footer-col-title {
+    font-size: 0.88rem !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    letter-spacing: 0.02em !important;
+    margin-bottom: 2px !important;
+  }
+
+  .footer-link {
+    font-size: 0.84rem !important;
+    color: #a7a7a7 !important;
+    text-decoration: none !important;
+    transition: color 0.15s ease !important;
+    display: inline-block !important;
+  }
+
+  .footer-link:active {
+    color: #ffffff !important;
+  }
+
+  .footer-socials {
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+    margin: 8px 0 16px 0 !important;
+  }
+
+  .social-circle-btn {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50% !important;
+    background: #282828 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    border: none !important;
+    transition: background 0.15s ease !important;
+  }
+
+  .social-circle-btn:active {
+    background: #3e3e3e !important;
+  }
+
+  .social-circle-btn svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  .footer-divider {
+    height: 1px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    margin: 22px 0 !important;
+    width: 100% !important;
+  }
+
+  .footer-legal-row {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+  }
+
+  .legal-links {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 12px 16px !important;
+  }
+
+  .legal-links a {
+    font-size: 0.72rem !important;
+    color: #a7a7a7 !important;
+    text-decoration: none !important;
+  }
+
+  .copyright-notice {
+    font-size: 0.76rem !important;
+    color: #888888 !important;
+    margin-top: 6px !important;
+  }
+
+  .copyright-notice a {
+    color: #1ed760 !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
   }
   .search-tab-view,
   .library-tab-view {
