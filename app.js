@@ -3515,37 +3515,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnLib = document.getElementById('mobNavLibraryBtn');
     const searchInput = document.getElementById('searchInput');
 
-    if (btnHome) {
-      btnHome.addEventListener('click', () => {
-        document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
-        btnHome.classList.add('active');
-        if (window.sonic?.switchView) {
-          window.sonic.switchView('browse');
-        }
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-    }
-
-    if (btnSearch) {
-      btnSearch.addEventListener('click', () => {
-        document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
-        btnSearch.classList.add('active');
-        if (searchInput) {
-          searchInput.focus();
-          searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      });
-    }
-
-    if (btnLib) {
-      btnLib.addEventListener('click', () => {
-        document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
-        btnLib.classList.add('active');
-        if (window.sonic?.renderLikedView) {
-          window.sonic.renderLikedView();
-        }
-      });
-    }
+    if (btnHome) btnHome.addEventListener('click', () => window.switchMobileTab('home'));
+    if (btnSearch) btnSearch.addEventListener('click', () => window.switchMobileTab('search'));
+    if (btnLib) btnLib.addEventListener('click', () => window.switchMobileTab('library'));
 
     // 6 Quick Tiles
     const tileLiked = document.getElementById('mobTileLiked');
@@ -3607,3 +3579,272 @@ document.addEventListener('DOMContentLoaded', () => {
 
   setTimeout(setupMobileActions, 600);
 });
+
+
+// ==========================================================================
+// DEDICATED SPOTIFY MOBILE TABS ENGINE & LIVE FUTURE RELEASES
+// ==========================================================================
+(function() {
+  window.switchMobileTab = function(tabName) {
+    const btnHome = document.getElementById('mobNavHomeBtn');
+    const btnSearch = document.getElementById('mobNavSearchBtn');
+    const btnLib = document.getElementById('mobNavLibraryBtn');
+
+    [btnHome, btnSearch, btnLib].forEach(b => b?.classList.remove('active'));
+
+    const homeView = document.getElementById('browsePrompt');
+    const searchView = document.getElementById('searchTabPrompt');
+    const libView = document.getElementById('libraryTabPrompt');
+    const filterBar = document.getElementById('subFilterBar');
+    const topBar = document.querySelector('.top-nav-bar');
+    const quickSection = document.getElementById('spotifyMobileQuickSection');
+
+    // Hide any subviews (detail, showall, liked, offline)
+    document.getElementById('likedSongsView')?.classList.add('hidden');
+    document.getElementById('offlineSongsView')?.classList.add('hidden');
+    document.getElementById('detailView')?.classList.add('hidden');
+    document.getElementById('showAllView')?.classList.add('hidden');
+    document.getElementById('lyricsView')?.classList.add('hidden');
+
+    if (tabName === 'home') {
+      document.body.classList.remove('tab-search-active', 'tab-library-active');
+      btnHome?.classList.add('active');
+      homeView?.classList.remove('hidden');
+      if (quickSection) quickSection.classList.remove('hidden');
+      searchView?.classList.add('hidden');
+      libView?.classList.add('hidden');
+      if (filterBar) filterBar.style.display = '';
+      if (topBar) topBar.style.display = '';
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    } else if (tabName === 'search') {
+      document.body.classList.add('tab-search-active');
+      document.body.classList.remove('tab-library-active');
+      btnSearch?.classList.add('active');
+      homeView?.classList.add('hidden');
+      if (quickSection) quickSection.classList.add('hidden');
+      searchView?.classList.remove('hidden');
+      libView?.classList.add('hidden');
+      if (filterBar) filterBar.style.display = 'none';
+      if (topBar) topBar.style.display = 'none';
+      const tabInput = document.getElementById('tabSearchInput');
+      if (tabInput) {
+        setTimeout(() => tabInput.focus(), 80);
+      }
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    } else if (tabName === 'library') {
+      document.body.classList.add('tab-library-active');
+      document.body.classList.remove('tab-search-active');
+      btnLib?.classList.add('active');
+      homeView?.classList.add('hidden');
+      if (quickSection) quickSection.classList.add('hidden');
+      searchView?.classList.add('hidden');
+      libView?.classList.remove('hidden');
+      if (filterBar) filterBar.style.display = 'none';
+      if (topBar) topBar.style.display = 'none';
+
+      // Sync count
+      const countEl = document.getElementById('mobLikedCountText');
+      if (countEl && window.sonic?.likedSongs) {
+        countEl.textContent = window.sonic.likedSongs.length;
+      }
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  };
+
+  // Wire events
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      // 1. Bottom Nav Buttons
+      const btnHome = document.getElementById('mobNavHomeBtn');
+      const btnSearch = document.getElementById('mobNavSearchBtn');
+      const btnLib = document.getElementById('mobNavLibraryBtn');
+
+      if (btnHome) btnHome.onclick = () => window.switchMobileTab('home');
+      if (btnSearch) btnSearch.onclick = () => window.switchMobileTab('search');
+      if (btnLib) btnLib.onclick = () => window.switchMobileTab('library');
+
+      // 2. Search Tab Inputs & Genres
+      const tabSearchInput = document.getElementById('tabSearchInput');
+      const tabClearBtn = document.getElementById('tabSearchClearBtn');
+      const genreCards = document.querySelectorAll('.genre-card');
+      const searchCategories = document.getElementById('searchTabCategories');
+      const tabSearchResults = document.getElementById('tabSearchResultsContainer');
+
+      if (tabSearchInput) {
+        let debounceTimer;
+        tabSearchInput.addEventListener('input', (e) => {
+          const q = e.target.value.trim();
+          tabClearBtn?.classList.toggle('hidden', q.length === 0);
+
+          clearTimeout(debounceTimer);
+          if (!q) {
+            searchCategories?.classList.remove('hidden');
+            tabSearchResults?.classList.add('hidden');
+          } else {
+            debounceTimer = setTimeout(() => {
+              searchCategories?.classList.add('hidden');
+              tabSearchResults?.classList.remove('hidden');
+              if (window.sonic?.performSearch) {
+                window.sonic.performSearch(q);
+                // Also clone results to tab results if desired
+                const activeResults = document.getElementById('activeResults');
+                if (activeResults) {
+                  activeResults.classList.remove('hidden');
+                }
+              }
+            }, 300);
+          }
+        });
+      }
+
+      if (tabClearBtn) {
+        tabClearBtn.addEventListener('click', () => {
+          if (tabSearchInput) tabSearchInput.value = '';
+          tabClearBtn.classList.add('hidden');
+          searchCategories?.classList.remove('hidden');
+          tabSearchResults?.classList.add('hidden');
+        });
+      }
+
+      genreCards.forEach(card => {
+        card.addEventListener('click', () => {
+          const genre = card.getAttribute('data-genre') || card.textContent.trim();
+          if (tabSearchInput) {
+            tabSearchInput.value = genre;
+            tabClearBtn?.classList.remove('hidden');
+          }
+          searchCategories?.classList.add('hidden');
+          tabSearchResults?.classList.remove('hidden');
+          if (window.sonic?.performSearch) {
+            window.sonic.performSearch(genre);
+          }
+        });
+      });
+
+      // 3. Library Tab Rows
+      const libLikedRow = document.getElementById('mobLibLikedRow');
+      if (libLikedRow) {
+        libLikedRow.addEventListener('click', () => {
+          document.getElementById('libraryTabPrompt')?.classList.add('hidden');
+          if (window.sonic?.renderLikedView) {
+            window.sonic.renderLikedView();
+          }
+        });
+      }
+
+      const libOfflineRow = document.getElementById('mobLibOfflineRow');
+      if (libOfflineRow) {
+        libOfflineRow.addEventListener('click', () => {
+          document.getElementById('libraryTabPrompt')?.classList.add('hidden');
+          if (window.sonic?.renderOfflineView) {
+            window.sonic.renderOfflineView();
+          }
+        });
+      }
+
+      const libArijitRow = document.getElementById('mobLibArijitRow');
+      if (libArijitRow) {
+        libArijitRow.addEventListener('click', () => {
+          if (window.sonic?.performSearch) window.sonic.performSearch('Arijit Singh');
+        });
+      }
+
+      const libHoneyRow = document.getElementById('mobLibHoneyRow');
+      if (libHoneyRow) {
+        libHoneyRow.addEventListener('click', () => {
+          if (window.sonic?.performSearch) window.sonic.performSearch('Yo Yo Honey Singh');
+        });
+      }
+
+      const libAtifRow = document.getElementById('mobLibAtifRow');
+      if (libAtifRow) {
+        libAtifRow.addEventListener('click', () => {
+          if (window.sonic?.performSearch) window.sonic.performSearch('Atif Aslam');
+        });
+      }
+
+      const libRahmanRow = document.getElementById('mobLibRahmanRow');
+      if (libRahmanRow) {
+        libRahmanRow.addEventListener('click', () => {
+          if (window.sonic?.performSearch) window.sonic.performSearch('A.R. Rahman');
+        });
+      }
+
+      // 4. LIVE NEW RELEASES FETCHER (Ensures future new releases are always live)
+      fetchLiveNewReleases();
+    }, 400);
+  });
+
+  // Dynamic Live New Releases Fetcher Function
+  async function fetchLiveNewReleases() {
+    try {
+      // 1. Instant local cache display (0ms lag)
+      const cached = localStorage.getItem('sonic_live_new_releases');
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0 && typeof SONIC_CATALOG !== 'undefined') {
+            SONIC_CATALOG.newMusic = parsed;
+            if (window.sonic?.renderShelf) {
+              window.sonic.renderShelf('shelfNewMusic', parsed);
+            }
+          }
+        } catch(e) {}
+      }
+
+      // 2. Query Native Android Bridge first (direct local native speed, no file scheme limits)
+      let liveTracks = [];
+      if (window.SonicNative?.getLiveNewReleases) {
+        try {
+          const raw = window.SonicNative.getLiveNewReleases();
+          const json = JSON.parse(raw);
+          if (json && json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
+            liveTracks = json.data;
+          }
+        } catch(e) {
+          console.warn('Native getLiveNewReleases error:', e);
+        }
+      }
+
+      // 3. Fallback: Direct JioSaavn HTTPS Search
+      if (!liveTracks.length) {
+        try {
+          const res = await fetch('https://www.jiosaavn.com/api.php?__call=search.getResults&_format=json&n=30&p=1&q=Latest%20Hindi%20Songs');
+          if (res.ok) {
+            const data = await res.json();
+            const results = data.results || data.data?.results || [];
+            if (Array.isArray(results) && results.length > 0) {
+              liveTracks = results.map(r => ({
+                id: 'saavn_' + (r.id || Math.random().toString(36).substring(2, 9)),
+                title: (r.song || r.title || '').replace(/&quot;/g, '"').replace(/&#039;/g, "'").replace(/&amp;/g, '&'),
+                artist: (r.primary_artists || r.singers || r.artist || 'Latest Release').replace(/&quot;/g, '"').replace(/&#039;/g, "'").replace(/&amp;/g, '&'),
+                album: (r.album || 'Single').replace(/&quot;/g, '"').replace(/&#039;/g, "'").replace(/&amp;/g, '&'),
+                image: (r.image || '').replace('150x150', '500x500'),
+                duration: r.duration ? parseInt(r.duration) : 210,
+                year: r.year || '2025',
+                streamUrl: r.media_preview_url || '',
+                audioUrl: r.media_preview_url || ''
+              })).filter(t => t.title && t.artist);
+            }
+          }
+        } catch(e) {
+          console.warn('Direct Saavn fetch note:', e);
+        }
+      }
+
+      // 4. Inject live tracks, store in cache, and update UI
+      if (liveTracks && liveTracks.length > 0) {
+        localStorage.setItem('sonic_live_new_releases', JSON.stringify(liveTracks));
+        if (typeof SONIC_CATALOG !== 'undefined') {
+          SONIC_CATALOG.newMusic = liveTracks;
+        }
+        if (window.sonic?.renderShelf) {
+          window.sonic.renderShelf('shelfNewMusic', liveTracks);
+        }
+        console.log('Live New Releases dynamically synchronized: ' + liveTracks.length + ' tracks');
+      }
+    } catch(err) {
+      console.warn('fetchLiveNewReleases error:', err);
+    }
+  }
+})();

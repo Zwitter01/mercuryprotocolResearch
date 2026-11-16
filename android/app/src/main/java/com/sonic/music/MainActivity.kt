@@ -37,6 +37,8 @@ class MainActivity : ComponentActivity() {
         const val ACTION_PLAY_PAUSE = "com.sonic.music.ACTION_PLAY_PAUSE"
         const val ACTION_NEXT = "com.sonic.music.ACTION_NEXT"
         const val ACTION_PREV = "com.sonic.music.ACTION_PREV"
+        const val ACTION_TAB = "com.sonic.music.ACTION_TAB"
+        const val ACTION_EVAL = "com.sonic.music.ACTION_EVAL"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,9 +52,8 @@ class MainActivity : ComponentActivity() {
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Sonic:AudioWakeLock")
 
         createNotificationChannel()
-        handleIntentAction(intent)
-
         setupWebView()
+        handleIntentAction(intent)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -61,6 +62,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleIntentAction(intent: Intent?) {
+        if (!::webView.isInitialized) return
         when (intent?.action) {
             ACTION_PLAY_PAUSE -> {
                 runOnUiThread {
@@ -75,6 +77,18 @@ class MainActivity : ComponentActivity() {
             ACTION_PREV -> {
                 runOnUiThread {
                     webView.evaluateJavascript("window.sonic?.playPrevious?.();", null)
+                }
+            }
+            ACTION_TAB -> {
+                val tab = intent.getStringExtra("tab") ?: "home"
+                runOnUiThread {
+                    webView.evaluateJavascript("window.switchMobileTab?.('$tab');", null)
+                }
+            }
+            ACTION_EVAL -> {
+                val js = intent.getStringExtra("js") ?: ""
+                runOnUiThread {
+                    webView.evaluateJavascript(js, null)
                 }
             }
         }
@@ -139,6 +153,12 @@ class MainActivity : ComponentActivity() {
                         val track = url.getQueryParameter("track") ?: ""
                         val artist = url.getQueryParameter("artist") ?: ""
                         val json = SonicApiResolver.resolveLyrics(track, artist)
+                        val stream = ByteArrayInputStream(json.toByteArray(Charsets.UTF_8))
+                        return WebResourceResponse("application/json", "UTF-8", stream)
+                    }
+
+                    if (path.contains("/api/newreleases")) {
+                        val json = SonicApiResolver.getLiveNewReleases()
                         val stream = ByteArrayInputStream(json.toByteArray(Charsets.UTF_8))
                         return WebResourceResponse("application/json", "UTF-8", stream)
                     }

@@ -471,4 +471,38 @@ object SonicApiResolver {
         }
         return arr
     }
+
+    fun getLiveNewReleases(): String {
+        val url = "https://www.jiosaavn.com/api.php?__call=search.getResults&_format=json&n=25&p=1&q=Latest%20Hindi%20Songs"
+        return try {
+            val req = Request.Builder()
+                .url(url)
+                .header("User-Agent", "Mozilla/5.0")
+                .build()
+            httpClient.newCall(req).execute().use { resp ->
+                val body = resp.body?.string() ?: "{}"
+                val json = JSONObject(body)
+                val results = json.optJSONArray("results") ?: JSONArray()
+                val list = JSONArray()
+                for (i in 0 until results.length()) {
+                    val s = results.getJSONObject(i)
+                    val rawImg = s.optString("image", "").replace("150x150", "500x500")
+                    val item = JSONObject().apply {
+                        put("id", "live_${s.optString("id", "")}")
+                        put("title", s.optString("song", "New Release").replace("&quot;", "\"").replace("&amp;", "&"))
+                        put("artist", s.optString("singers", "Various Artists").replace("&quot;", "\"").replace("&amp;", "&"))
+                        put("album", s.optString("album", "Single").replace("&quot;", "\"").replace("&amp;", "&"))
+                        put("image", rawImg)
+                        put("year", s.optString("year", "2026"))
+                        put("query", s.optString("song", "") + " " + s.optString("singers", ""))
+                        put("provider", "jiosaavn-live")
+                    }
+                    list.put(item)
+                }
+                JSONObject().put("status", "success").put("data", list).toString()
+            }
+        } catch (e: Exception) {
+            "{\"status\":\"error\",\"data\":[]}"
+        }
+    }
 }

@@ -1640,3 +1640,368 @@ html, body {
 @media (max-width: 768px) {
   .nav-right, #signUpBtn, #logInBtn, .signup-btn, .login-pill-btn { display: none !important; }
 }
+
+
+
+/* ==========================================================================
+   SPOTIFY MOBILE DEDICATED SEARCH & LIBRARY TABS (1:1 Native Fidelity)
+   ========================================================================== */
+.search-tab-view,
+.library-tab-view {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  /* 60 FPS Smooth Scrolling & Hardware Acceleration */
+  * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .shelf-carousel-container {
+    -webkit-overflow-scrolling: touch !important;
+    transform: translateZ(0) !important;
+  }
+
+  /* SEARCH TAB */
+  .search-tab-view:not(.hidden) {
+    display: block !important;
+    width: 100% !important;
+    padding: 16px 16px 130px 16px !important;
+    animation: fadeInTab 0.15s ease-out !important;
+  }
+
+  .search-tab-header {
+    margin-bottom: 20px !important;
+  }
+
+  .tab-main-title {
+    font-size: 1.85rem !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    letter-spacing: -0.03em !important;
+    margin: 4px 0 16px 0 !important;
+    font-family: var(--font-family) !important;
+  }
+
+  .search-tab-input-capsule {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    background: #ffffff !important;
+    border-radius: 8px !important;
+    height: 48px !important;
+    padding: 0 14px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .search-tab-input-capsule input {
+    flex: 1 1 auto !important;
+    background: transparent !important;
+    border: none !important;
+    color: #000000 !important;
+    font-size: 0.94rem !important;
+    font-weight: 600 !important;
+    outline: none !important;
+  }
+
+  .search-tab-input-capsule input::placeholder {
+    color: #555555 !important;
+    font-weight: 500 !important;
+  }
+
+  .category-grid-title {
+    font-size: 1.15rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    margin: 20px 0 14px 0 !important;
+  }
+
+  .genre-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+
+  .genre-card {
+    height: 96px !important;
+    border-radius: 8px !important;
+    padding: 12px 14px !important;
+    position: relative !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+    user-select: none !important;
+    transition: transform 0.1s ease !important;
+  }
+
+  .genre-card:active {
+    transform: scale(0.97) !important;
+  }
+
+  .genre-title {
+    font-size: 1.05rem !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  /* YOUR LIBRARY TAB */
+  .library-tab-view:not(.hidden) {
+    display: block !important;
+    width: 100% !important;
+    padding: 14px 16px 130px 16px !important;
+    animation: fadeInTab 0.15s ease-out !important;
+  }
+
+  .library-tab-top-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 14px !important;
+  }
+
+  .library-user-avatar {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 50% !important;
+    background: #ff5e3a !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 0.9rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .lib-header-icon-btn {
+    width: 36px !important;
+    height: 36px !important;
+    background: transparent !important;
+    border: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+  }
+
+  .library-filter-chips {
+    display: flex !important;
+    gap: 8px !important;
+    margin-bottom: 16px !important;
+    overflow-x: auto !important;
+  }
+
+  .lib-chip {
+    padding: 6px 16px !important;
+    border-radius: 20px !important;
+    background: #2a2a2a !important;
+    color: #ffffff !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    border: none !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+  }
+
+  .lib-chip.active {
+    background: #1ed760 !important;
+    color: #000000 !important;
+  }
+
+  .library-sort-bar {
+    display: flex !important;
+    align-items: center !important;
+    margin-bottom: 14px !important;
+  }
+
+  .lib-sort-label {
+    display: flex !important;
+    align-items: center !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    color: #b3b3b3 !important;
+  }
+
+  .library-items-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+
+  .library-item-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+    padding: 6px 0 !important;
+    cursor: pointer !important;
+    user-select: none !important;
+    transition: background 0.1s ease !important;
+  }
+
+  .library-item-row:active {
+    opacity: 0.7 !important;
+  }
+
+  .lib-tile-artwork {
+    width: 56px !important;
+    height: 56px !important;
+    border-radius: 6px !important;
+    object-fit: cover !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+
+  .lib-tile-artwork.round {
+    border-radius: 50% !important;
+  }
+
+  .lib-tile-artwork.liked-gradient {
+    background: linear-gradient(135deg, #450af5, #c4efd9) !important;
+  }
+
+  .lib-tile-artwork.offline-gradient {
+    background: linear-gradient(135deg, #006450, #1ed760) !important;
+  }
+
+  .lib-tile-info {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .lib-tile-title {
+    font-size: 0.92rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .lib-tile-sub {
+    font-size: 0.76rem !important;
+    color: #b3b3b3 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  @keyframes fadeInTab {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+
+@media (max-width: 768px) {
+  .spotify-catalog-footer {
+    display: none !important;
+  }
+  .search-tab-view,
+  .library-tab-view {
+    background-color: #121212 !important;
+    min-height: 100vh !important;
+  }
+}
+
+
+/* =========================================================
+   BULLETPROOF SPOTIFY MOBILE NAVIGATION & TAB ISOLATION
+   ========================================================= */
+@media (max-width: 768px) {
+  /* Absolute override: When hidden, ALWAYS hide completely */
+  #browsePrompt.hidden,
+  .browse-prompt.hidden,
+  #searchTabPrompt.hidden,
+  .search-tab-view.hidden,
+  #libraryTabPrompt.hidden,
+  .library-tab-view.hidden,
+  .hidden {
+    display: none !important;
+  }
+
+  /* Fixed Spotify Bottom Navigation Bar */
+  .spotify-mobile-bottom-nav {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    height: 60px !important;
+    background: #121212 !important;
+    border-top: 1px solid #282828 !important;
+    z-index: 99999 !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    padding: 0 12px !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    transform: none !important;
+  }
+
+  .mob-nav-btn {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    background: transparent !important;
+    border: none !important;
+    color: #888888 !important;
+    padding: 6px 14px !important;
+    cursor: pointer !important;
+    touch-action: manipulation !important;
+    user-select: none !important;
+    font-family: inherit !important;
+  }
+
+  .mob-nav-btn.active {
+    color: #ffffff !important;
+  }
+
+  .mob-nav-btn.active .mob-nav-svg {
+    transform: scale(1.05) !important;
+  }
+
+  .mob-nav-svg {
+    width: 24px !important;
+    height: 24px !important;
+    transition: transform 0.12s ease !important;
+  }
+
+  .mob-nav-btn span {
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.01em !important;
+  }
+
+  /* Dedicated Views full height & background */
+  .search-tab-view,
+  .library-tab-view {
+    background: #121212 !important;
+    min-height: calc(100vh - 60px) !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding-bottom: 120px !important;
+  }
+
+  .sonic-app {
+    padding-bottom: 70px !important;
+  }
+}
+
+/* Hide Top Bar & Sub-filter bar completely on Search & Library tabs */
+body.tab-search-active .top-nav-bar,
+body.tab-library-active .top-nav-bar,
+body.tab-search-active #subFilterBar,
+body.tab-library-active #subFilterBar {
+  display: none !important;
+}
