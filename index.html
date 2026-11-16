@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23FF7A45'/><stop offset='50%25' stop-color='%23FF3D8B'/><stop offset='100%25' stop-color='%237C5CFF'/></linearGradient></defs><circle cx='50' cy='50' r='48' fill='url(%23g)'/><path fill='%23FFFFFF' d='M38 28c0-1.1.9-2 2-2l24-4.5c1.3-.2 2.5.8 2.5 2.1v29.6c-2.1-1.1-4.7-1.7-7.5-1.7-6.6 0-12 4-12 9s5.4 9 12 9 12-4 12-9V33.2l-27 5.1v23.9c-2.1-1.1-4.7-1.7-7.5-1.7-6.6 0-12 4-12 9s5.4 9 12 9 12-4 12-9V28z'/></svg>">
 </head>
-<body>
+<body class="android-app">
   <div class="sonic-app">
     <!-- Top Global Bar (Spotify-Exact Header matching User Screenshot 2) -->
     <header class="top-nav-bar">
@@ -280,7 +280,6 @@
 
           <!-- Section 1: Trending now (Today's biggest hits) -->
           <div class="shelf-block" id="shelfBiggestHitsBlock">
-            <div class="shelf-preheader">Hot &amp; Viral • What India is streaming right now</div>
             <div class="shelf-header">
               <h2>Trending now</h2>
               <button class="show-all-btn" data-shelf="biggestHits">Show all</button>
@@ -298,7 +297,6 @@
 
           <!-- Section 2: New releases (Top picks in new music) -->
           <div class="shelf-block" id="shelfNewMusicBlock">
-            <div class="shelf-preheader">Fresh drops • Latest chartbusters &amp; singles</div>
             <div class="shelf-header">
               <h2>New releases</h2>
               <button class="show-all-btn" data-shelf="newMusic">Show all</button>
@@ -401,7 +399,6 @@
 
           <!-- Section 6: Based on your recent listening (Image 4) -->
           <div class="shelf-block">
-            <div class="shelf-preheader">Inspired by your recent activity</div>
             <div class="shelf-header">
               <h2>Based on your recent listening</h2>
               <button class="show-all-btn" data-shelf="recentListening">Show all</button>
@@ -419,7 +416,6 @@
 
           <!-- Section 7: Sad songs (Image 8) -->
           <div class="shelf-block">
-            <div class="shelf-preheader">Music for dark days.</div>
             <div class="shelf-header">
               <h2>Sad songs</h2>
               <button class="show-all-btn" data-shelf="sadSongs">Show all</button>
@@ -437,7 +433,6 @@
 
           <!-- Section 8: Throwback (Image 9) -->
           <div class="shelf-block">
-            <div class="shelf-preheader">Playlists full of favourites, still going strong.</div>
             <div class="shelf-header">
               <h2>Throwback</h2>
               <button class="show-all-btn" data-shelf="throwback">Show all</button>
@@ -1177,15 +1172,15 @@
   </div>
 
   <nav class="spotify-mobile-bottom-nav" id="spotifyMobileBottomNav">
-      <button class="mob-nav-btn active" id="mobNavHomeBtn" title="Home" onclick="window.switchMobileTab('home')">
+      <button type="button" class="mob-nav-btn active" id="mobNavHomeBtn" title="Home" onclick="window.switchMobileTab('home')" ontouchend="window.switchMobileTab('home'); event.preventDefault();">
         <svg viewBox="0 0 24 24" class="mob-nav-svg"><path fill="currentColor" d="M12.5 3.247a1 1 0 0 0-1 0L4 7.577V20h4.5v-6a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v6H20V7.577l-7.5-4.33z"/></svg>
         <span>Home</span>
       </button>
-      <button class="mob-nav-btn" id="mobNavSearchBtn" title="Search" onclick="window.switchMobileTab('search')">
+      <button type="button" class="mob-nav-btn" id="mobNavSearchBtn" title="Search" onclick="window.switchMobileTab('search')" ontouchend="window.switchMobileTab('search'); event.preventDefault();">
         <svg viewBox="0 0 24 24" class="mob-nav-svg"><path fill="currentColor" d="M10.533 1.279c-5.18 0-9.407 4.14-9.407 9.279s4.226 9.279 9.407 9.279c2.234 0 4.29-.77 5.907-2.058l4.353 4.353a1 1 0 1 0 1.414-1.414l-4.344-4.344a9.157 9.157 0 0 0 2.077-5.816c0-5.14-4.226-9.279-9.407-9.279zm-7.407 9.279c0-4.006 3.302-7.279 7.407-7.279s7.407 3.273 7.407 7.279-3.302 7.279-7.407 7.279-7.407-3.273-7.407-7.279z"/></svg>
         <span>Search</span>
       </button>
-      <button class="mob-nav-btn" id="mobNavLibraryBtn" title="Your Library" onclick="window.switchMobileTab('library')">
+      <button type="button" class="mob-nav-btn" id="mobNavLibraryBtn" title="Your Library" onclick="window.switchMobileTab('library')" ontouchend="window.switchMobileTab('library'); event.preventDefault();">
         <svg viewBox="0 0 24 24" class="mob-nav-svg"><path fill="currentColor" d="M3 22a1 1 0 0 1-1-1V3a1 1 0 0 1 2 0v18a1 1 0 0 1-1 1zM15.5 2.134A1 1 0 0 0 14 3v18a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V3a1 1 0 0 0-1.5-.866zM20 20h-4V4h4v16zM7 2a1 1 0 0 0-1 1v18a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H7zm3 18H8V4h2v16z"/></svg>
         <span>Your Library</span>
       </button>

@@ -86,9 +86,7 @@ class MainActivity : ComponentActivity() {
             }
             ACTION_TAB -> {
                 val tab = intent.getStringExtra("tab") ?: "home"
-                runOnUiThread {
-                    webView.evaluateJavascript("window.switchMobileTab?.('$tab');", null)
-                }
+                switchTabDirectly(tab)
             }
             ACTION_EVAL -> {
                 val js = intent.getStringExtra("js") ?: ""
@@ -218,6 +216,12 @@ class MainActivity : ComponentActivity() {
         } else {
             currentArtworkBitmap = null
             showNotification()
+        }
+    }
+
+    fun switchTabDirectly(tab: String) {
+        runOnUiThread {
+            webView.evaluateJavascript("window.switchMobileTab?.('$tab');", null)
         }
     }
 

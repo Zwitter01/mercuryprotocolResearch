@@ -3612,48 +3612,51 @@ document.addEventListener('DOMContentLoaded', () => {
     const libView = document.getElementById('libraryTabPrompt');
     const filterBar = document.getElementById('subFilterBar');
     const topBar = document.querySelector('.top-nav-bar');
+    const mobHeader = document.getElementById('spotifyMobileHeader');
     const quickSection = document.getElementById('spotifyMobileQuickSection');
 
-    // Hide any subviews (detail, showall, liked, offline)
+    // Hide any subviews (detail, showall, liked, offline, lyrics)
     document.getElementById('likedSongsView')?.classList.add('hidden');
     document.getElementById('offlineSongsView')?.classList.add('hidden');
     document.getElementById('detailView')?.classList.add('hidden');
     document.getElementById('showAllView')?.classList.add('hidden');
     document.getElementById('lyricsView')?.classList.add('hidden');
+    document.getElementById('activeResults')?.classList.add('hidden');
 
     if (tabName === 'home') {
       document.body.classList.remove('tab-search-active', 'tab-library-active');
       btnHome?.classList.add('active');
-      homeView?.classList.remove('hidden');
+      if (homeView) homeView.classList.remove('hidden');
       if (quickSection) quickSection.classList.remove('hidden');
-      searchView?.classList.add('hidden');
-      libView?.classList.add('hidden');
-      if (filterBar) filterBar.style.display = '';
-      if (topBar) topBar.style.display = '';
+      if (searchView) searchView.classList.add('hidden');
+      if (libView) libView.classList.add('hidden');
+      if (mobHeader) mobHeader.style.display = 'flex';
       window.scrollTo({ top: 0, behavior: 'instant' });
     } else if (tabName === 'search') {
       document.body.classList.add('tab-search-active');
       document.body.classList.remove('tab-library-active');
       btnSearch?.classList.add('active');
-      homeView?.classList.add('hidden');
+      if (homeView) homeView.classList.add('hidden');
       if (quickSection) quickSection.classList.add('hidden');
-      searchView?.classList.remove('hidden');
-      libView?.classList.add('hidden');
+      if (searchView) searchView.classList.remove('hidden');
+      if (libView) libView.classList.add('hidden');
+      if (mobHeader) mobHeader.style.display = 'none';
       if (filterBar) filterBar.style.display = 'none';
       if (topBar) topBar.style.display = 'none';
       const tabInput = document.getElementById('tabSearchInput');
       if (tabInput) {
-        setTimeout(() => tabInput.focus(), 80);
+        setTimeout(() => tabInput.focus(), 60);
       }
       window.scrollTo({ top: 0, behavior: 'instant' });
     } else if (tabName === 'library') {
       document.body.classList.add('tab-library-active');
       document.body.classList.remove('tab-search-active');
       btnLib?.classList.add('active');
-      homeView?.classList.add('hidden');
+      if (homeView) homeView.classList.add('hidden');
       if (quickSection) quickSection.classList.add('hidden');
-      searchView?.classList.add('hidden');
-      libView?.classList.remove('hidden');
+      if (searchView) searchView.classList.add('hidden');
+      if (libView) libView.classList.remove('hidden');
+      if (mobHeader) mobHeader.style.display = 'none';
       if (filterBar) filterBar.style.display = 'none';
       if (topBar) topBar.style.display = 'none';
 
@@ -3672,9 +3675,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnHome = document.getElementById('mobNavHomeBtn');
     const btnSearch = document.getElementById('mobNavSearchBtn');
     const btnLib = document.getElementById('mobNavLibraryBtn');
-    if (btnHome) btnHome.onclick = (e) => { e.preventDefault(); e.stopPropagation(); window.switchMobileTab('home'); };
-    if (btnSearch) btnSearch.onclick = (e) => { e.preventDefault(); e.stopPropagation(); window.switchMobileTab('search'); };
-    if (btnLib) btnLib.onclick = (e) => { e.preventDefault(); e.stopPropagation(); window.switchMobileTab('library'); };
+    ['click', 'touchend'].forEach(evt => {
+      btnHome?.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); window.switchMobileTab('home'); }, { passive: false });
+      btnSearch?.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); window.switchMobileTab('search'); }, { passive: false });
+      btnLib?.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); window.switchMobileTab('library'); }, { passive: false });
+    });
 
       // 2. Search Tab Inputs & Genres
       const tabSearchInput = document.getElementById('tabSearchInput');

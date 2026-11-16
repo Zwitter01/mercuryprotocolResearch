@@ -58,4 +58,11 @@ class SonicNativeBridge(private val activity: MainActivity) {
             """{"status":"error","message":"${e.message}"}"""
         }
     }
+
+    @JavascriptInterface
+    fun switchTab(tab: String) {
+        activity.runOnUiThread {
+            activity.switchTabDirectly(tab)
+        }
+    }
 }

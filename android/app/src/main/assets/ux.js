@@ -30,21 +30,26 @@
   });
 
   // Scroll reveal for shelves
-  if ('IntersectionObserver' in window && canvas) {
+  if ('IntersectionObserver' in window) {
     root.classList.add('js-reveal');
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); }
       });
-    }, { root: canvas, threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    }, { root: null, threshold: 0.02, rootMargin: '0px 0px 100px 0px' });
     var seen = new WeakSet();
     var scan = function () {
       document.querySelectorAll('.shelf-block, .spotify-catalog-footer, .detail-hero, .liked-header-card, .offline-header-card').forEach(function (el) {
-        if (!seen.has(el)) { seen.add(el); io.observe(el); }
+        if (!seen.has(el)) {
+          seen.add(el);
+          io.observe(el);
+          // Fallback: guarantee visibility
+          setTimeout(function() { el.classList.add('in-view'); }, 300);
+        }
       });
     };
     scan();
-    new MutationObserver(scan).observe(canvas, { childList: true, subtree: true });
+    if (canvas) new MutationObserver(scan).observe(canvas, { childList: true, subtree: true });
   }
 
   // Spotlight + 3D tilt on cards
