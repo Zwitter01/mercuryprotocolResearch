@@ -90,6 +90,18 @@
     </header>
 
     <!-- Main Workspace (Spotify Sidebar Library + Main Canvas) -->
+    
+    <!-- 1:1 SPOTIFY MOBILE SIGNATURE HEADER (Avatar + Category Pills, No Search Bar) -->
+    <header class="spotify-mobile-header" id="spotifyMobileHeader">
+      <div class="spotify-mob-user-avatar" id="mobTopUserAvatar" onclick="window.switchMobileTab('library')" title="Your Library">V</div>
+      <div class="spotify-mob-filter-pills" id="mobFilterPills">
+        <button class="mob-pill active" data-filter="all">All</button>
+        <button class="mob-pill" data-filter="music">Music</button>
+        <button class="mob-pill" data-filter="radio">Radio</button>
+        <button class="mob-pill" data-filter="trending">Trending</button>
+      </div>
+    </header>
+
     <div class="app-body">
       <!-- Spotify Desktop Left Sidebar: "Your Library" -->
       <aside class="sidebar" id="librarySidebar">
@@ -304,9 +316,9 @@
 
           <!-- Section 3: Made For You (Dynamic Mood Recommendation Shelf - Instagram Algorithm Style) -->
           <div class="shelf-block" id="shelfMadeForYouBlock">
-            <div class="shelf-preheader" id="madeForYouPreheader">Adaptive Mood Feed • Tuned live to what you like</div>
+            
             <div class="shelf-header">
-              <h2 id="madeForYouTitle">Made For You • Romantic & Soulful Hits</h2>
+              <h2 id="madeForYouTitle">Made For You</h2>
               <button class="show-all-btn" id="madeForYouShowAllBtn" data-shelf="madeForYou">Show all</button>
             </div>
             <div class="shelf-carousel-container" data-carousel="shelfMadeForYou">
@@ -339,7 +351,7 @@
           <!-- Section 2: Popular albums and singles (Image 2) -->
           <div class="shelf-block">
             <div class="shelf-header">
-              <h2>Popular albums and singles</h2>
+              <h2>Popular albums</h2>
               <button class="show-all-btn" data-shelf="popularAlbums">Show all</button>
             </div>
             <div class="shelf-carousel-container" data-carousel="shelfPopularAlbums">

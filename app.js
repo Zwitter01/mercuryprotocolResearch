@@ -476,10 +476,10 @@ class SonicRecommendationEngine {
     const preheader = document.getElementById('madeForYouPreheader');
     const title = document.getElementById('madeForYouTitle');
     if (preheader) {
-      preheader.textContent = `Adaptive Mood Feed • ${meta.subtitle}`;
+      
     }
     if (title) {
-      title.textContent = `Made For You • ${meta.title}`;
+      title.textContent = 'Made For You';
     }
 
     // 2. Render Made For You cards
@@ -1235,7 +1235,7 @@ class SonicEngine {
     if (items.length === 0) return;
 
     const shelfTitles = {
-      madeForYou: this.recommender ? `Made For You • ${this.recommender.getDominantMoodMeta().title}` : 'Made For You',
+      madeForYou: 'Made For You',
       popularArtists: 'Popular artists',
       popularAlbums: 'Popular albums and singles',
       popularRadio: 'Popular radio',
@@ -2503,6 +2503,7 @@ class SonicEngine {
   }
 
   initSonicConnect() {
+    if (window.location.protocol === 'file:') return;
     this.connectDeviceId = localStorage.getItem('sonic_connect_id');
     if (!this.connectDeviceId) {
       this.connectDeviceId = 'dev_' + Math.random().toString(36).substring(2, 8) + '_' + Date.now().toString(36);
@@ -3509,15 +3510,29 @@ document.addEventListener('DOMContentLoaded', () => {
       else mobGreeting.textContent = 'Good evening';
     }
 
-    // Bottom Navigation Buttons
-    const btnHome = document.getElementById('mobNavHomeBtn');
-    const btnSearch = document.getElementById('mobNavSearchBtn');
-    const btnLib = document.getElementById('mobNavLibraryBtn');
-    const searchInput = document.getElementById('searchInput');
+    
+    // Mobile Top Bar Filter Pills
+    const mobPills = document.querySelectorAll('.mob-pill');
+    mobPills.forEach(p => {
+      p.addEventListener('click', () => {
+        mobPills.forEach(pill => pill.classList.remove('active'));
+        p.classList.add('active');
+        const f = p.getAttribute('data-filter');
+        if (f === 'all') {
+          document.querySelectorAll('.shelf-block').forEach(s => s.classList.remove('hidden'));
+        } else if (f === 'music') {
+          document.querySelectorAll('.shelf-block').forEach(s => s.classList.remove('hidden'));
+        } else if (f === 'radio') {
+          const radioBlock = document.getElementById('shelfRadioBlock');
+          if (radioBlock) radioBlock.scrollIntoView({ behavior: 'smooth' });
+        } else if (f === 'trending') {
+          const trendingBlock = document.getElementById('shelfBiggestHitsBlock');
+          if (trendingBlock) trendingBlock.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
 
-    if (btnHome) btnHome.addEventListener('click', () => window.switchMobileTab('home'));
-    if (btnSearch) btnSearch.addEventListener('click', () => window.switchMobileTab('search'));
-    if (btnLib) btnLib.addEventListener('click', () => window.switchMobileTab('library'));
+    // Bottom Navigation Buttons handled cleanly via delegated nav below
 
     // 6 Quick Tiles
     const tileLiked = document.getElementById('mobTileLiked');
@@ -3652,16 +3667,14 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // Wire events
-  document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-      // 1. Bottom Nav Buttons
-      const btnHome = document.getElementById('mobNavHomeBtn');
-      const btnSearch = document.getElementById('mobNavSearchBtn');
-      const btnLib = document.getElementById('mobNavLibraryBtn');
-
-      if (btnHome) btnHome.onclick = () => window.switchMobileTab('home');
-      if (btnSearch) btnSearch.onclick = () => window.switchMobileTab('search');
-      if (btnLib) btnLib.onclick = () => window.switchMobileTab('library');
+  const initMobileTabs = () => {
+    // 1. Bottom Nav Buttons - Direct Click & Touch handlers
+    const btnHome = document.getElementById('mobNavHomeBtn');
+    const btnSearch = document.getElementById('mobNavSearchBtn');
+    const btnLib = document.getElementById('mobNavLibraryBtn');
+    if (btnHome) btnHome.onclick = (e) => { e.preventDefault(); e.stopPropagation(); window.switchMobileTab('home'); };
+    if (btnSearch) btnSearch.onclick = (e) => { e.preventDefault(); e.stopPropagation(); window.switchMobileTab('search'); };
+    if (btnLib) btnLib.onclick = (e) => { e.preventDefault(); e.stopPropagation(); window.switchMobileTab('library'); };
 
       // 2. Search Tab Inputs & Genres
       const tabSearchInput = document.getElementById('tabSearchInput');
@@ -3772,8 +3785,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // 4. LIVE NEW RELEASES FETCHER (Ensures future new releases are always live)
       fetchLiveNewReleases();
-    }, 400);
-  });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => setTimeout(initMobileTabs, 50));
+    } else {
+      setTimeout(initMobileTabs, 50);
+    }
 
   // Dynamic Live New Releases Fetcher Function
   async function fetchLiveNewReleases() {

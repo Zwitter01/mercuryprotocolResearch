@@ -1075,9 +1075,7 @@ html, body {
 .spotify-mobile-quick-section {
   display: none;
 }
-.spotify-mobile-bottom-nav {
-  display: none;
-}
+
 
 @media (max-width: 768px) {
   /* 1. ABSOLUTE ZERO HORIZONTAL WOBBLE ENGINE */
@@ -1585,6 +1583,8 @@ html, body {
   }
 
   .mob-nav-btn {
+    flex: 1 1 0 !important;
+    height: 100% !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -1593,10 +1593,11 @@ html, body {
     background: transparent !important;
     border: none !important;
     color: #b3b3b3 !important;
-    padding: 6px 16px !important;
+    padding: 0 !important;
     cursor: pointer !important;
     transition: color 0.15s ease !important;
     user-select: none !important;
+    pointer-events: auto !important;
   }
 
   .mob-nav-btn.active {
@@ -2056,6 +2057,8 @@ html, body {
   }
 
   .mob-nav-btn {
+    flex: 1 1 0 !important;
+    height: 100% !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -2064,11 +2067,14 @@ html, body {
     background: transparent !important;
     border: none !important;
     color: #888888 !important;
-    padding: 6px 14px !important;
+    padding: 0 !important;
     cursor: pointer !important;
     touch-action: manipulation !important;
     user-select: none !important;
     font-family: inherit !important;
+  }
+  .mob-nav-btn * {
+    pointer-events: none !important;
   }
 
   .mob-nav-btn.active {
@@ -2112,4 +2118,143 @@ body.tab-library-active .top-nav-bar,
 body.tab-search-active #subFilterBar,
 body.tab-library-active #subFilterBar {
   display: none !important;
+}
+
+/* =========================================================
+   1:1 SPOTIFY MOBILE REFINEMENTS (Clean Titles, No Top Search, Header)
+   ========================================================= */
+.spotify-mobile-header {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  /* 1. HIDE TOP DESKTOP HEADER & SUBFILTER COMPLETELY */
+  .top-nav-bar,
+  #subFilterBar {
+    display: none !important;
+  }
+
+  /* 2. 1:1 SPOTIFY MOBILE TOP BAR (Avatar + Category Pills) */
+  .spotify-mobile-header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 12px 16px 8px 16px !important;
+    background: #121212 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+  }
+
+  body.tab-search-active .spotify-mobile-header,
+  body.tab-library-active .spotify-mobile-header {
+    display: none !important;
+  }
+
+  .spotify-mob-user-avatar {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 50% !important;
+    background: #ff5e3a !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 0.92rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    cursor: pointer !important;
+    user-select: none !important;
+  }
+
+  .spotify-mob-filter-pills {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .spotify-mob-filter-pills::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .mob-pill {
+    padding: 6px 16px !important;
+    border-radius: 20px !important;
+    background: #282828 !important;
+    color: #ffffff !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    border: none !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    font-family: inherit !important;
+    transition: background 0.15s ease, color 0.15s ease !important;
+  }
+
+  .mob-pill.active {
+    background: #1ed760 !important;
+    color: #000000 !important;
+  }
+
+  /* 3. HIDE ALL VERBOSE UPPERCASE PREHEADERS FOR CLEAN SPOTIFY LOOK */
+  .shelf-preheader,
+  #madeForYouPreheader {
+    display: none !important;
+  }
+
+  /* 4. CLEAN BOLD SPOTIFY SECTION TITLES */
+  .shelf-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 12px !important;
+  }
+
+  .shelf-header h2 {
+    font-size: 1.35rem !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    letter-spacing: -0.02em !important;
+    margin: 0 !important;
+    font-family: var(--font-family) !important;
+  }
+
+  .show-all-btn {
+    font-size: 0.76rem !important;
+    font-weight: 700 !important;
+    color: #b3b3b3 !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 4px 8px !important;
+  }
+
+  /* 5. GUARANTEE PERMANENT FIXED BOTTOM NAVIGATION VISIBILITY FROM 0MS */
+  .spotify-mobile-bottom-nav {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    height: 64px !important;
+    padding-bottom: env(safe-area-inset-bottom, 8px) !important;
+    background: #121212 !important;
+    border-top: 1px solid #282828 !important;
+    z-index: 999999 !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    transform: none !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
 }
