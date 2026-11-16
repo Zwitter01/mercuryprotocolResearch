@@ -85,6 +85,9 @@ class MainActivity : ComponentActivity() {
         webView = WebView(this).apply {
             setBackgroundColor(android.graphics.Color.parseColor("#050409"))
             setLayerType(View.LAYER_TYPE_HARDWARE, null)
+            isVerticalScrollBarEnabled = false
+            isHorizontalScrollBarEnabled = false
+            overScrollMode = View.OVER_SCROLL_NEVER
 
             settings.apply {
                 javaScriptEnabled = true
@@ -105,6 +108,7 @@ class MainActivity : ComponentActivity() {
 
             webChromeClient = object : WebChromeClient() {
                 override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+                    android.util.Log.d("SonicWeb", "${consoleMessage?.message()}")
                     return true
                 }
             }

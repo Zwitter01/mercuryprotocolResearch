@@ -1066,3 +1066,577 @@ html, body {
     min-height: 42px !important;
   }
 }
+
+
+
+/* ==========================================================================
+   SPOTIFY MOBILE EXACT 1:1 STYLING & ZERO HORIZONTAL WOBBLE ENGINE
+   ========================================================================== */
+.spotify-mobile-quick-section {
+  display: none;
+}
+.spotify-mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  /* 1. ABSOLUTE ZERO HORIZONTAL WOBBLE ENGINE */
+  html, body {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    overscroll-behavior-x: none !important;
+    touch-action: pan-y !important;
+    position: relative !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: #121212 !important;
+    height: auto !important;
+    min-height: 100% !important;
+  }
+
+  .sonic-app {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    overscroll-behavior-x: none !important;
+    position: relative !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    min-height: 100vh !important;
+  }
+
+  .app-body {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    margin: 0 !important;
+    padding: 0 0 145px 0 !important; /* Space for floating miniplayer + bottom nav */
+    display: block !important;
+  }
+
+  .sidebar {
+    display: none !important;
+    width: 0 !important;
+  }
+
+  .main-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    margin: 0 !important;
+    padding: 0 16px !important;
+    box-sizing: border-box !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    display: block !important;
+  }
+
+  .browse-prompt {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+  }
+
+  /* 2. COMPLETE REMOVAL OF DESKTOP HERO BANNER & GLOW ORBS */
+  #heroBanner,
+  .hero,
+  .hero-orb,
+  .hero-orb-a,
+  .hero-orb-b,
+  .hero-visual,
+  .hero-eyebrow,
+  .hero-title,
+  .hero-sub,
+  .hero-actions,
+  .hero-stats {
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  /* 3. SPOTIFY MOBILE HEADER */
+  .top-nav-bar {
+    height: 52px !important;
+    min-height: 52px !important;
+    padding: 0 16px !important;
+    margin: 0 !important;
+    background: #121212 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+  }
+
+  .nav-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  .brand-text,
+  .nav-home-btn,
+  .home-circle-btn,
+  .capsule-divider,
+  .browse-shelf-btn,
+  .quick-links,
+  .install-app-btn,
+  .top-nav-support-link,
+  .top-nav-download-link,
+  #userProfileCapsule,
+  #topHomeBtn {
+    display: none !important;
+  }
+
+  .spotify-search-capsule {
+    height: 38px !important;
+    background: #242424 !important;
+    border: none !important;
+    border-radius: 20px !important;
+    padding: 0 14px !important;
+    flex: 1 1 auto !important;
+    max-width: none !important;
+  }
+
+  .search-input {
+    font-size: 0.88rem !important;
+    color: #ffffff !important;
+  }
+
+  /* 4. SOLID FILTER BAR - ZERO OVERLAP */
+  .filter-bar {
+    background: #121212 !important;
+    padding: 6px 16px 10px !important;
+    margin: 0 !important;
+    position: sticky !important;
+    top: 52px !important;
+    z-index: 95 !important;
+    border-bottom: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .filter-pills {
+    display: flex !important;
+    gap: 8px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-x: contain !important;
+    touch-action: pan-x pan-y !important;
+    padding-bottom: 2px !important;
+    width: 100% !important;
+  }
+
+  .filter-pills::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .filter-pills .pill {
+    padding: 6px 15px !important;
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    border-radius: 20px !important;
+    background: #2a2a2a !important;
+    color: #ffffff !important;
+    border: none !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+
+  .filter-pills .pill.active {
+    background: #1ed760 !important; /* Spotify Signature Green */
+    color: #000000 !important;
+  }
+
+  /* 5. SPOTIFY MOBILE GREETING & 6 QUICK-TILES */
+  .spotify-mobile-quick-section {
+    display: block !important;
+    margin: 10px 0 24px 0 !important;
+    width: 100% !important;
+  }
+
+  .spotify-mobile-greeting {
+    font-size: 1.45rem !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    margin: 4px 0 14px 0 !important;
+    letter-spacing: -0.02em !important;
+  }
+
+  .spotify-mobile-quick-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .quick-tile {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    background: #2a2a2a !important;
+    border-radius: 6px !important;
+    overflow: hidden !important;
+    height: 52px !important;
+    cursor: pointer !important;
+    user-select: none !important;
+    transition: background 0.15s ease !important;
+  }
+
+  .quick-tile:active {
+    background: #383838 !important;
+    transform: scale(0.98) !important;
+  }
+
+  .tile-icon-box {
+    width: 52px !important;
+    height: 52px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+
+  .tile-icon-box.liked-box {
+    background: linear-gradient(135deg, #450af5, #c4efd9) !important;
+  }
+
+  .tile-icon-box.offline-box {
+    background: linear-gradient(135deg, #006450, #1ed760) !important;
+  }
+
+  .tile-img {
+    width: 52px !important;
+    height: 52px !important;
+    object-fit: cover !important;
+    flex-shrink: 0 !important;
+  }
+
+  .tile-name {
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    line-height: 1.2 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    padding-right: 8px !important;
+  }
+
+  /* 6. SHELVES & CAROUSELS */
+  .shelf-block {
+    margin-bottom: 28px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .shelf-header {
+    display: flex !important;
+    align-items: baseline !important;
+    justify-content: space-between !important;
+    margin-bottom: 12px !important;
+  }
+
+  .shelf-header h2 {
+    font-size: 1.3rem !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    letter-spacing: -0.02em !important;
+    margin: 0 !important;
+  }
+
+  .shelf-preheader {
+    font-size: 0.74rem !important;
+    color: #b3b3b3 !important;
+    margin-bottom: 3px !important;
+  }
+
+  .show-all-btn {
+    font-size: 0.78rem !important;
+    color: #b3b3b3 !important;
+    font-weight: 700 !important;
+  }
+
+  .shelf-carousel-container {
+    display: flex !important;
+    gap: 14px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-x: contain !important;
+    touch-action: pan-x pan-y !important;
+    padding-bottom: 8px !important;
+    width: 100% !important;
+  }
+
+  .shelf-carousel-container::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .shelf-arrow-btn {
+    display: none !important;
+  }
+
+  .spotify-card {
+    width: 136px !important;
+    min-width: 136px !important;
+    max-width: 136px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .card-artwork-wrapper {
+    width: 136px !important;
+    height: 136px !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    background: #282828 !important;
+    position: relative !important;
+  }
+
+  .card-artwork-wrapper img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  .card-play-hover-btn {
+    display: none !important;
+  }
+
+  .card-title {
+    font-size: 0.83rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .card-sub {
+    font-size: 0.73rem !important;
+    color: #b3b3b3 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  [data-carousel="shelfPopularArtists"] .card-artwork-wrapper,
+  [data-carousel="shelfPopularArtists"] .card-artwork-wrapper img {
+    border-radius: 50% !important;
+  }
+
+  /* 7. SPOTIFY FLOATING MINI-PLAYER */
+  .player-bar {
+    position: fixed !important;
+    left: 8px !important;
+    right: 8px !important;
+    width: auto !important;
+    max-width: none !important;
+    bottom: 60px !important; /* Floats right above 56px bottom nav */
+    height: 56px !important;
+    min-height: 56px !important;
+    background: #242033 !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 8px !important;
+    padding: 0 12px 0 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+    z-index: 100 !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8) !important;
+    transform: none !important;
+    translate: 0 0 !important;
+    animation: none !important;
+  }
+
+  .player-bar::before {
+    display: none !important;
+  }
+
+  .now-playing {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .artwork-wrapper {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 6px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .track-info {
+    display: flex !important;
+    flex-direction: column !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .track-title {
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .track-artist {
+    font-size: 0.72rem !important;
+    color: #b3b3b3 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .player-controls {
+    flex: 0 0 auto !important;
+  }
+
+  .player-buttons {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    margin: 0 !important;
+  }
+
+  .play-main-btn {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    border-radius: 50% !important;
+  }
+
+  .play-main-btn svg {
+    fill: #000000 !important;
+  }
+
+  #prevBtn, #shuffleBtn, #repeatBtn, .playback-bar, .player-right-tools {
+    display: none !important;
+  }
+
+  #nextBtn {
+    display: inline-flex !important;
+    width: 28px !important;
+    height: 28px !important;
+    color: #b3b3b3 !important;
+  }
+
+  #likeTrackBtn {
+    display: inline-flex !important;
+    width: 28px !important;
+    height: 28px !important;
+    color: #b3b3b3 !important;
+  }
+
+  /* 8. SPOTIFY FIXED BOTTOM NAVIGATION BAR */
+  .spotify-mobile-bottom-nav {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: 56px !important;
+    background: linear-gradient(180deg, rgba(18, 18, 18, 0.96), #000000) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    z-index: 110 !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    padding: 0 8px !important;
+  }
+
+  .mob-nav-btn {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    background: transparent !important;
+    border: none !important;
+    color: #b3b3b3 !important;
+    padding: 6px 16px !important;
+    cursor: pointer !important;
+    transition: color 0.15s ease !important;
+    user-select: none !important;
+  }
+
+  .mob-nav-btn.active {
+    color: #ffffff !important;
+  }
+
+  .mob-nav-svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  .mob-nav-btn span {
+    font-size: 0.68rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.02em !important;
+  }
+}
+
+/* Additional Spotify Mobile Refinements */
+@media (max-width: 768px) {
+  #loginBtn,
+  .login-pill-btn,
+  .nav-right .login-pill-btn {
+    display: none !important;
+  }
+  .spotify-mobile-greeting {
+    display: block !important;
+    font-size: 1.45rem !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    margin: 12px 0 14px 0 !important;
+    padding: 0 !important;
+    letter-spacing: -0.02em !important;
+  }
+  .filter-bar {
+    padding: 8px 16px 8px 16px !important;
+    margin-bottom: 6px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-right, #signUpBtn, #logInBtn, .signup-btn, .login-pill-btn { display: none !important; }
+}

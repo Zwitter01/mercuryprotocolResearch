@@ -3493,3 +3493,117 @@ class SonicEngine {
 window.addEventListener('DOMContentLoaded', () => {
   window.sonic = new SonicEngine();
 });
+
+
+// ==========================================================================
+// SPOTIFY MOBILE NAVIGATION & QUICK TILES WIRING
+// ==========================================================================
+document.addEventListener('DOMContentLoaded', () => {
+  const setupMobileActions = () => {
+    // Dynamic greeting based on time of day
+    const mobGreeting = document.getElementById('mobGreeting');
+    if (mobGreeting) {
+      const hour = new Date().getHours();
+      if (hour >= 4 && hour < 12) mobGreeting.textContent = 'Good morning';
+      else if (hour >= 12 && hour < 17) mobGreeting.textContent = 'Good afternoon';
+      else mobGreeting.textContent = 'Good evening';
+    }
+
+    // Bottom Navigation Buttons
+    const btnHome = document.getElementById('mobNavHomeBtn');
+    const btnSearch = document.getElementById('mobNavSearchBtn');
+    const btnLib = document.getElementById('mobNavLibraryBtn');
+    const searchInput = document.getElementById('searchInput');
+
+    if (btnHome) {
+      btnHome.addEventListener('click', () => {
+        document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
+        btnHome.classList.add('active');
+        if (window.sonic?.switchView) {
+          window.sonic.switchView('browse');
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
+    if (btnSearch) {
+      btnSearch.addEventListener('click', () => {
+        document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
+        btnSearch.classList.add('active');
+        if (searchInput) {
+          searchInput.focus();
+          searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+    }
+
+    if (btnLib) {
+      btnLib.addEventListener('click', () => {
+        document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
+        btnLib.classList.add('active');
+        if (window.sonic?.renderLikedView) {
+          window.sonic.renderLikedView();
+        }
+      });
+    }
+
+    // 6 Quick Tiles
+    const tileLiked = document.getElementById('mobTileLiked');
+    if (tileLiked) {
+      tileLiked.addEventListener('click', () => {
+        if (window.sonic?.renderLikedView) window.sonic.renderLikedView();
+      });
+    }
+
+    const tileOffline = document.getElementById('mobTileOffline');
+    if (tileOffline) {
+      tileOffline.addEventListener('click', () => {
+        if (window.sonic?.renderOfflineView) window.sonic.renderOfflineView();
+      });
+    }
+
+    const tileArijit = document.getElementById('mobTileArijit');
+    if (tileArijit) {
+      tileArijit.addEventListener('click', () => {
+        if (window.sonic?.performSearch) window.sonic.performSearch('Arijit Singh');
+      });
+    }
+
+    const tileHoney = document.getElementById('mobTileHoney');
+    if (tileHoney) {
+      tileHoney.addEventListener('click', () => {
+        if (window.sonic?.performSearch) window.sonic.performSearch('Yo Yo Honey Singh');
+      });
+    }
+
+    const tileAtif = document.getElementById('mobTileAtif');
+    if (tileAtif) {
+      tileAtif.addEventListener('click', () => {
+        if (window.sonic?.performSearch) window.sonic.performSearch('Atif Aslam');
+      });
+    }
+    const tileRahman = document.getElementById('mobTileRahman');
+    if (tileRahman) {
+      tileRahman.addEventListener('click', () => {
+        if (window.sonic?.performSearch) window.sonic.performSearch('A.R. Rahman');
+      });
+    }
+
+
+    const tileAashiqui = document.getElementById('mobTileAashiqui');
+    if (tileAashiqui) {
+      tileAashiqui.addEventListener('click', () => {
+        if (window.sonic?.performSearch) window.sonic.performSearch('Aashiqui 2');
+      });
+    }
+
+    const tileTrending = document.getElementById('mobTileTrending');
+    if (tileTrending) {
+      tileTrending.addEventListener('click', () => {
+        if (window.sonic?.playTrendingFeed) window.sonic.playTrendingFeed();
+      });
+    }
+  };
+
+  setTimeout(setupMobileActions, 600);
+});

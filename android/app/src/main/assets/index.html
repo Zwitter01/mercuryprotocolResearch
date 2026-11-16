@@ -201,7 +201,44 @@
         <!-- 1. Primary Browse Feed (Matching All 12 User Reference Images) -->
         <section id="browsePrompt" class="browse-prompt">
           <!-- Hero banner -->
-          <section class="hero" id="heroBanner">
+          
+        <!-- SPOTIFY MOBILE 6 QUICK-TILES (1:1 Spotify Mobile Signature) -->
+        <div class="spotify-mobile-quick-section" id="spotifyMobileQuickSection">
+          <div class="spotify-mobile-greeting" id="mobGreeting">Good evening</div>
+          <div class="spotify-mobile-quick-grid" id="spotifyMobileQuickGrid">
+            <div class="quick-tile" id="mobTileLiked">
+              <div class="tile-icon-box liked-box">
+                <svg viewBox="0 0 24 24" width="22" height="22"><path fill="#fff" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              </div>
+              <span class="tile-name">Liked Songs</span>
+            </div>
+            <div class="quick-tile" id="mobTileOffline">
+              <div class="tile-icon-box offline-box">
+                <svg viewBox="0 0 24 24" width="22" height="22"><path fill="#fff" d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+              </div>
+              <span class="tile-name">Offline Vault</span>
+            </div>
+            <div class="quick-tile" id="mobTileArijit">
+              <img src="assets/artists/arijit_singh.jpg" class="tile-img" alt="Arijit Singh">
+              <span class="tile-name">Arijit Singh</span>
+            </div>
+            <div class="quick-tile" id="mobTileHoney">
+              <img src="assets/artists/honey_singh.jpg" class="tile-img" alt="Yo Yo Honey Singh">
+              <span class="tile-name">Yo Yo Honey Singh</span>
+            </div>
+            <div class="quick-tile" id="mobTileAtif">
+              <img src="assets/artists/atif_aslam.jpg" class="tile-img" alt="Atif Aslam">
+              <span class="tile-name">Atif Aslam</span>
+            </div>
+            <div class="quick-tile" id="mobTileRahman">
+              <img src="assets/artists/ar_rahman.jpg" class="tile-img" alt="A.R. Rahman">
+              <span class="tile-name">A.R. Rahman</span>
+            </div>
+          </div>
+        </div>
+        
+
+        <section class="hero" id="heroBanner">
             <div class="hero-orb hero-orb-a"></div>
             <div class="hero-orb hero-orb-b"></div>
             <div class="hero-copy">
@@ -859,6 +896,23 @@
       </div>
       <audio id="audioElement" preload="auto"></audio>
     </footer>
+
+    <!-- SPOTIFY MOBILE BOTTOM NAVIGATION BAR (1:1 Spotify Mobile Signature) -->
+    <nav class="spotify-mobile-bottom-nav" id="spotifyMobileBottomNav">
+      <button class="mob-nav-btn active" id="mobNavHomeBtn" title="Home">
+        <svg viewBox="0 0 24 24" class="mob-nav-svg"><path fill="currentColor" d="M12.5 3.247a1 1 0 0 0-1 0L4 7.577V20h4.5v-6a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v6H20V7.577l-7.5-4.33z"/></svg>
+        <span>Home</span>
+      </button>
+      <button class="mob-nav-btn" id="mobNavSearchBtn" title="Search">
+        <svg viewBox="0 0 24 24" class="mob-nav-svg"><path fill="currentColor" d="M10.533 1.279c-5.18 0-9.407 4.14-9.407 9.279s4.226 9.279 9.407 9.279c2.234 0 4.29-.77 5.907-2.058l4.353 4.353a1 1 0 1 0 1.414-1.414l-4.344-4.344a9.157 9.157 0 0 0 2.077-5.816c0-5.14-4.226-9.279-9.407-9.279zm-7.407 9.279c0-4.006 3.302-7.279 7.407-7.279s7.407 3.273 7.407 7.279-3.302 7.279-7.407 7.279-7.407-3.273-7.407-7.279z"/></svg>
+        <span>Search</span>
+      </button>
+      <button class="mob-nav-btn" id="mobNavLibraryBtn" title="Your Library">
+        <svg viewBox="0 0 24 24" class="mob-nav-svg"><path fill="currentColor" d="M3 22a1 1 0 0 1-1-1V3a1 1 0 0 1 2 0v18a1 1 0 0 1-1 1zM15.5 2.134A1 1 0 0 0 14 3v18a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V3a1 1 0 0 0-1.5-.866zM20 20h-4V4h4v16zM7 2a1 1 0 0 0-1 1v18a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H7zm3 18H8V4h2v16z"/></svg>
+        <span>Your Library</span>
+      </button>
+    </nav>
+
   </div>
 
   <!-- Auth Modal (Sign Up / Log In with Google & Gmail) -->
