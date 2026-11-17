@@ -22,6 +22,14 @@ object SonicApiResolver {
     private val searchCache = mutableMapOf<String, String>()
     private const val SC_CLIENT_ID = "qLcgHhXgeEFFaSolTB9I71LBsqncsD93"
 
+    private fun cleanText(str: String): String {
+        return str.replace("&quot;", "\"")
+            .replace("&#039;", "'")
+            .replace("&amp;", "&")
+            .replace("&lt;", "<")
+            .replace("&gt;", ">")
+    }
+
     private fun hasCJK(str: String): Boolean {
         return str.any { it.code in 0x3040..0x30FF || it.code in 0x3400..0x4DBF || it.code in 0x4E00..0x9FFF }
     }
@@ -84,9 +92,9 @@ object SonicApiResolver {
                                 val durSec = s.optString("duration", "215").toIntOrNull() ?: 215
                                 val tObj = JSONObject().apply {
                                     put("id", "saavn_${s.optString("id", "")}")
-                                    put("title", s.optString("song", cleanQ))
-                                    put("artist", s.optString("primary_artists", s.optString("singers", "Unknown")))
-                                    put("album", s.optString("album", "Single"))
+                                    put("title", cleanText(s.optString("song", cleanQ)))
+                                    put("artist", cleanText(s.optString("primary_artists", s.optString("singers", "Unknown"))))
+                                    put("album", cleanText(s.optString("album", "Single")))
                                     put("artwork", s.optString("image", "").replace("150x150", "500x500"))
                                     put("previewUrl", "")
                                     put("durationMs", durSec * 1000L)
@@ -260,9 +268,9 @@ object SonicApiResolver {
                                 val payload = JSONObject().apply {
                                     put("success", true)
                                     put("provider", "jiosaavn-320k")
-                                    put("title", selected.optString("song", cleanQ))
-                                    put("artist", selected.optString("primary_artists", selected.optString("singers", "Unknown")))
-                                    put("album", selected.optString("album", ""))
+                                    put("title", cleanText(selected.optString("song", cleanQ)))
+                                    put("artist", cleanText(selected.optString("primary_artists", selected.optString("singers", "Unknown"))))
+                                    put("album", cleanText(selected.optString("album", "")))
                                     put("duration", duration)
                                     put("artwork", artwork)
                                     put("streamUrl", streamUrl)

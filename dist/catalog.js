@@ -733,56 +733,56 @@ const SONIC_CATALOG = {
       title: 'Tauba Tauba (From "Bad Newz")',
       subtitle: 'Karan Aujla • Latest Chartbuster',
       query: 'Tauba Tauba Karan Aujla',
-      image: 'https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/dd/39/14/dd3914e5-a2f3-b355-51f3-9a1f0e3ca246/8903431853592_cover.jpg/600x600bb.jpg'
+      image: 'https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/79/d2/01/79d201d2-e54d-5604-81fb-313f30db7219/198588533581.jpg/600x600bb.jpg'
     },
     {
       id: 'new_chal_kudiye',
       title: 'Chal Kudiye (From "Jigra")',
       subtitle: 'Diljit Dosanjh, Alia Bhatt • Fresh Drop',
       query: 'Chal Kudiye Diljit',
-      image: 'https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/af/11/f9/af11f978-7b08-8025-eb57-25682c8d9acb/5054197842245.jpg/600x600bb.jpg'
+      image: 'https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/7d/3b/5b/7d3b5bb0-646d-c434-7426-db6a4458e78c/198846361918.jpg/600x600bb.jpg'
     },
     {
       id: 'new_illuminate',
       title: 'Illuminati (From "Aavesham")',
       subtitle: 'Sushin Shyam, Dabzee • Viral Sensation',
       query: 'Illuminati Aavesham',
-      image: 'https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/75/76/90/75769099-e111-feae-1eb1-fe068b39cf5c/8903431198303_cover.jpg/600x600bb.jpg'
+      image: 'https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/88/4e/29/884e290c-29ed-25d5-7b25-243b89097220/cover.jpg/600x600bb.jpg'
     },
     {
       id: 'new_aaj_ki_raat',
       title: 'Aaj Ki Raat (From "Stree 2")',
       subtitle: 'Sachin-Jigar, Madhubanti Bagchi, Divya Kumar',
       query: 'Aaj Ki Raat Stree 2',
-      image: 'https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/bb/23/ee/bb23eeed-0c35-4f1d-2b11-485622777ae4/8902894353007_cover.jpg/600x600bb.jpg'
+      image: 'https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/3a/7f/47/3a7f47da-2330-c758-4460-ce12f9385a82/198588793954.jpg/600x600bb.jpg'
     },
     {
       id: 'new_millionaire',
       title: 'Millionaire (From "Glory")',
       subtitle: 'Yo Yo Honey Singh • Global Viral',
-      query: 'Millionaire Honey Singh',
-      image: 'https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/b3/b5/d9/b3b5d986-7f6d-a860-b8aa-769e1eef1a92/8902894356299_cover.jpg/600x600bb.jpg'
+      query: 'Millionaire Honey Singh Glory',
+      image: 'https://c.saavncdn.com/173/GLORY-Hindi-2024-20250117161048-500x500.jpg'
     },
     {
       id: 'new_big_dawgs',
       title: 'Big Dawgs',
       subtitle: 'Hanumankind, Kalmi • Worldwide Hit',
       query: 'Big Dawgs Hanumankind',
-      image: 'https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/8a/89/e4/8a89e445-d2c6-f8ac-a828-27818b0c1afe/859749638209_cover.jpg/600x600bb.jpg'
+      image: 'https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/42/d2/6c/42d26c01-619f-fa0a-2e83-7f4a28b5d3b2/24UMGIM70977.rgb.jpg/600x600bb.jpg'
     },
     {
       id: 'new_aaja',
       title: 'Aaja Meri Jaani',
       subtitle: 'electronic kili, Arcado • Fresh Drop',
       query: 'Aaja Meri Jaani',
-      image: 'https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/bc/b1/dd/bcb1dd65-bfbc-8666-c59b-8c007e664236/823375454786_Cover.jpg/600x600bb.jpg'
+      image: 'https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/af/6b/1f/af6b1f04-be29-61ae-ef7b-992b599bc9cb/885288286144.jpg/600x600bb.jpg'
     },
     {
       id: 'new_wild',
       title: 'WILD',
       subtitle: 'KATSEYE • International Release',
       query: 'KATSEYE Touch',
-      image: 'https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/dd/39/14/dd3914e5-a2f3-b355-51f3-9a1f0e3ca246/8903431853592_cover.jpg/600x600bb.jpg'
+      image: 'https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/08/fb/6a/08fb6a32-8856-f1f4-148b-8959bff0efb0/24UMGIM67773.rgb.jpg/600x600bb.jpg'
     },
     {
       id: 'new_penne',
@@ -801,9 +801,9 @@ const SONIC_CATALOG = {
     {
       id: 'new_tuhitu',
       title: 'Tu Hi Tu',
-      subtitle: 'Ruhani • Acoustic Melody',
-      query: 'Tu Hi Tu Salman',
-      image: 'https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/44/65/2a/44652a17-ed54-7224-ca3e-281a2f704412/196871079150.jpg/600x600bb.jpg'
+      subtitle: 'Salman Khan, Meet Bros • Kick',
+      query: 'Tu Hi Tu Kick Salman Khan',
+      image: 'https://is1-ssl.mzstatic.com/image/thumb/Music20/v4/ed/c6/66/edc6667a-0fea-5b7f-955a-dea22fecb074/8902894356015_cover.jpg/600x600bb.jpg'
     }
   ],
 

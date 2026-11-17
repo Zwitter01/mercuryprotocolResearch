@@ -1050,6 +1050,93 @@ class SonicEngine {
 
     this.dom.likeTrackBtn.addEventListener('click', () => this.toggleCurrentTrackLike());
 
+    // Mini-Player Bar Tap opens Spotify Mobile Full-Screen Player
+    const playerBar = document.querySelector('.player-bar');
+    if (playerBar) {
+      playerBar.addEventListener('click', (e) => {
+        if (e.target.closest('#playPauseBtn') || e.target.closest('#nextBtn') || e.target.closest('#prevBtn') || e.target.closest('#likeTrackBtn') || e.target.closest('#progressTrack') || e.target.closest('input')) {
+          return;
+        }
+        if (this.currentPlaylist && this.currentPlaylist[this.currentIndex]) {
+          this.openFullPlayer();
+        }
+      });
+    }
+
+    // Spotify Mobile Full-Screen Player Controls
+    const sfpCloseBtn = document.getElementById('sfpCloseBtn');
+    if (sfpCloseBtn) sfpCloseBtn.addEventListener('click', () => this.closeFullPlayer());
+
+    const sfpPlayPauseBtn = document.getElementById('sfpPlayPauseBtn');
+    if (sfpPlayPauseBtn) sfpPlayPauseBtn.addEventListener('click', () => this.togglePlayPause());
+
+    const sfpPrevBtn = document.getElementById('sfpPrevBtn');
+    if (sfpPrevBtn) sfpPrevBtn.addEventListener('click', () => this.playPrevious());
+
+    const sfpNextBtn = document.getElementById('sfpNextBtn');
+    if (sfpNextBtn) sfpNextBtn.addEventListener('click', () => this.playNext());
+
+    const sfpShuffleBtn = document.getElementById('sfpShuffleBtn');
+    if (sfpShuffleBtn) sfpShuffleBtn.addEventListener('click', () => {
+      this.isShuffle = !this.isShuffle;
+      this.dom.shuffleBtn.classList.toggle('active', this.isShuffle);
+      sfpShuffleBtn.classList.toggle('active-btn', this.isShuffle);
+      if (this.isShuffle) this.rebuildShuffleList();
+    });
+
+    const sfpRepeatBtn = document.getElementById('sfpRepeatBtn');
+    if (sfpRepeatBtn) sfpRepeatBtn.addEventListener('click', () => {
+      this.isRepeat = !this.isRepeat;
+      this.dom.repeatBtn.classList.toggle('active', this.isRepeat);
+      sfpRepeatBtn.classList.toggle('active-btn', this.isRepeat);
+    });
+
+    const sfpLikeBtn = document.getElementById('sfpLikeBtn');
+    if (sfpLikeBtn) sfpLikeBtn.addEventListener('click', () => {
+      if (this.currentPlaylist && this.currentPlaylist[this.currentIndex]) {
+        this.toggleLikeById(this.currentPlaylist[this.currentIndex].id);
+        this.updateFullPlayer();
+      }
+    });
+
+    const sfpProgressTrack = document.getElementById('sfpProgressTrack');
+    if (sfpProgressTrack) {
+      sfpProgressTrack.addEventListener('click', (e) => {
+        const rect = sfpProgressTrack.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const width = rect.width;
+        const track = this.currentPlaylist[this.currentIndex];
+        let dur = this.dom.audio.duration;
+        if (!dur || !isFinite(dur) || dur <= 0) {
+          dur = track && track.durationMs ? track.durationMs / 1000 : 210;
+        }
+        if (width > 0 && dur > 0) {
+          const ratio = Math.max(0, Math.min(1, clickX / width));
+          this.dom.audio.currentTime = ratio * dur;
+        }
+      });
+    }
+
+    const sfpLyricsBtn = document.getElementById('sfpLyricsBtn');
+    const sfpLyricsCard = document.getElementById('sfpLyricsCard');
+    const sfpLyricsExpandBtn = document.getElementById('sfpLyricsExpandBtn');
+    const openLyricsFn = () => {
+      this.closeFullPlayer();
+      this.switchView('lyrics');
+      if (this.currentPlaylist && this.currentPlaylist[this.currentIndex]) {
+        this.fetchLyrics(this.currentPlaylist[this.currentIndex]);
+      }
+    };
+    if (sfpLyricsBtn) sfpLyricsBtn.addEventListener('click', openLyricsFn);
+    if (sfpLyricsCard) sfpLyricsCard.addEventListener('click', openLyricsFn);
+    if (sfpLyricsExpandBtn) sfpLyricsExpandBtn.addEventListener('click', (e) => { e.stopPropagation(); openLyricsFn(); });
+
+    const sfpQueueBtn = document.getElementById('sfpQueueBtn');
+    if (sfpQueueBtn) sfpQueueBtn.addEventListener('click', () => {
+      this.closeFullPlayer();
+      this.toggleQueueView();
+    });
+
     // 9. Audio Element Events
     this.dom.audio.addEventListener('loadedmetadata', () => {
       const dur = this.dom.audio.duration;
@@ -1882,6 +1969,23 @@ class SonicEngine {
     try {
       let normalized = null;
 
+      // 0. Native Android Multi-Catalog Search (Direct OkHttp parallel query, bypasses WebView file:/// restriction)
+      if (window.SonicNative?.searchMultiCatalog) {
+        try {
+          const raw = window.SonicNative.searchMultiCatalog(query);
+          const sData = typeof raw === 'string' ? JSON.parse(raw) : raw;
+          if (sData && sData.success && (sData.tracks?.length > 0 || sData.artists?.length > 0)) {
+            normalized = {
+              tracks: sData.tracks || [],
+              artists: (sData.artists || []).slice(0, 8),
+              albums: (sData.albums || []).slice(0, 8)
+            };
+          }
+        } catch (e) {
+          console.warn('Native searchMultiCatalog error:', e);
+        }
+      }
+
       // 1. Try local server multi-catalog endpoint (only if hosted over http/https)
       if (window.location.protocol.startsWith('http')) {
         try {
@@ -2177,8 +2281,75 @@ class SonicEngine {
   }
 
   // ==========================================================================
-  // AUDIO PLAYBACK ENGINE
+  // AUDIO PLAYBACK ENGINE & FULL STUDIO AUDIO RESOLUTION
   // ==========================================================================
+  async resolveFullAudio(track) {
+    if (!track) return null;
+    if (track.fullStreamUrl) {
+      return {
+        success: true,
+        streamUrl: track.fullStreamUrl,
+        duration: (track.durationMs || 215000) / 1000,
+        artwork: track.artwork
+      };
+    }
+
+    const q = `${track.title} ${track.artist}`.replace(/[\(\)\[\]\-]/g, ' ').trim();
+
+    // 1. Native Android Bridge (Direct local OkHttp execution, 0ms latency, bypasses WebView file:/// restriction)
+    if (window.SonicNative?.resolveFullSong) {
+      try {
+        const raw = window.SonicNative.resolveFullSong(q);
+        const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        if (data && data.success && data.streamUrl) {
+          return data;
+        }
+      } catch (e) {
+        console.warn('Native resolveFullSong error:', e);
+      }
+    }
+
+    // 2. Web / Local Server Endpoint (When hosted over HTTP/HTTPS)
+    if (window.location.protocol.startsWith('http')) {
+      try {
+        const res = await fetch(`/api/fullsong?q=${encodeURIComponent(q)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.success && data.streamUrl) {
+            return data;
+          }
+        }
+      } catch (e) {
+        console.warn('HTTP resolveFullSong error:', e);
+      }
+    }
+
+    // 3. Direct JioSaavn 320kbps Search Fallback (lossless full song, no 30s limit)
+    try {
+      const saavnUrl = `https://www.jiosaavn.com/api.php?__call=search.getResults&_format=json&n=5&p=1&q=${encodeURIComponent(q)}`;
+      const sRes = await fetch(saavnUrl);
+      if (sRes.ok) {
+        const sData = await sRes.json();
+        const results = sData.results || sData.data?.results || [];
+        if (results && results.length > 0) {
+          const best = results[0];
+          const rawStream = best.media_preview_url || '';
+          const stream320 = rawStream.replace('_96_p.mp4', '_320.mp4').replace('_96.mp4', '_320.mp4');
+          if (stream320) {
+            return {
+              success: true,
+              streamUrl: stream320,
+              duration: parseInt(best.duration, 10) || 215,
+              artwork: (best.image || '').replace('150x150', '500x500')
+            };
+          }
+        }
+      }
+    } catch (e) {}
+
+    return null;
+  }
+
   async playTrack(index) {
     if (!this.currentPlaylist[index]) return;
     this.currentIndex = index;
@@ -2195,10 +2366,19 @@ class SonicEngine {
 
     this.updateCurrentTrackLikeButton();
     this.updatePlayingRowHighlight();
+    this.updateFullPlayer();
 
     if (this.isLyricsOpen) this.loadCurrentLyrics();
     if (this.isQueueOpen) this.renderQueuePanel();
     if (this.isMiniPlayerOpen) this.updateMiniPlayer();
+
+    // Notify Android Notification & Native Lockscreen
+    if (window.SonicNative?.onTrackChanged) {
+      try {
+        const durSec = Math.floor((track.durationMs || 215000) / 1000);
+        window.SonicNative.onTrackChanged(track.title, track.artist, track.artwork || '', durSec);
+      } catch (e) {}
+    }
 
     // 1. If full 320kbps stream URL is already known/cached for this track
     if (track.fullStreamUrl) {
@@ -2220,16 +2400,14 @@ class SonicEngine {
 
     // 3. Resolve Full Studio Quality 320kbps Audio Stream (No 30s limit, 100% Free)
     try {
-      const q = encodeURIComponent(`${track.title} ${track.artist}`.replace(/[\(\)\[\]\-]/g, ' ').trim());
-      const res = await fetch(`/api/fullsong?q=${q}`);
-      const fullData = await res.json();
+      const fullData = await this.resolveFullAudio(track);
 
       if (fullData && fullData.success && fullData.streamUrl) {
         // Ensure user hasn't switched to another track during fetch
         if (this.currentIndex === index) {
           const currentPos = previewStarted ? (this.dom.audio.currentTime || 0) : 0;
           track.fullStreamUrl = fullData.streamUrl;
-          track.durationMs = fullData.duration * 1000;
+          track.durationMs = (fullData.duration || 215) * 1000;
 
           if (fullData.artwork && (!track.artwork || track.artwork.includes('100x100'))) {
             track.artwork = fullData.artwork;
@@ -2242,6 +2420,7 @@ class SonicEngine {
           }
           this.dom.audio.play().catch(() => {});
           this.dom.totalTime.textContent = this.formatSeconds(fullData.duration);
+          this.updateFullPlayer();
           this.prefetchNextTrack(index);
           return;
         }
@@ -2264,6 +2443,7 @@ class SonicEngine {
           this.dom.audio.src = offlineBlobUrl;
           this.dom.audio.play().catch(() => {});
           this.dom.totalTime.textContent = this.formatSeconds(durSec);
+          this.updateFullPlayer();
         }
       } catch (synthErr) {
         console.warn('Offline fallback synth error:', synthErr);
@@ -2278,17 +2458,13 @@ class SonicEngine {
     if (this.currentPlaylist[nextIdx]) {
       const nextTrack = this.currentPlaylist[nextIdx];
       if (!nextTrack.fullStreamUrl) {
-        const qNext = encodeURIComponent(`${nextTrack.title} ${nextTrack.artist}`.replace(/[\(\)\[\]\-]/g, ' ').trim());
-        fetch(`/api/fullsong?q=${qNext}`)
-          .then(r => r.json())
-          .then(data => {
-            if (data && data.success && data.streamUrl) {
-              nextTrack.fullStreamUrl = data.streamUrl;
-              nextTrack.durationMs = data.duration * 1000;
-              if (data.artwork) nextTrack.artwork = data.artwork;
-            }
-          })
-          .catch(() => {});
+        this.resolveFullAudio(nextTrack).then(data => {
+          if (data && data.success && data.streamUrl) {
+            nextTrack.fullStreamUrl = data.streamUrl;
+            nextTrack.durationMs = (data.duration || 215) * 1000;
+            if (data.artwork) nextTrack.artwork = data.artwork;
+          }
+        }).catch(() => {});
       }
     }
   }
@@ -2319,6 +2495,81 @@ class SonicEngine {
     }
     if (this.dom.miniPlayBtn) {
       this.dom.miniPlayBtn.textContent = isPlaying ? '⏸' : '▶';
+    }
+    this.renderFullPlayerPlayPause(isPlaying);
+    if (window.SonicNative?.onPlaybackStateChanged) {
+      try { window.SonicNative.onPlaybackStateChanged(isPlaying); } catch(e) {}
+    }
+  }
+
+  // ==========================================================================
+  // SPOTIFY MOBILE FULL-SCREEN PLAYER CONTROLS
+  // ==========================================================================
+  openFullPlayer() {
+    const fullPlayer = document.getElementById('spotifyFullPlayer');
+    if (!fullPlayer) return;
+    fullPlayer.classList.remove('hidden');
+    this.updateFullPlayer();
+  }
+
+  closeFullPlayer() {
+    const fullPlayer = document.getElementById('spotifyFullPlayer');
+    if (!fullPlayer) return;
+    fullPlayer.classList.add('hidden');
+  }
+
+  updateFullPlayer() {
+    const fullPlayer = document.getElementById('spotifyFullPlayer');
+    if (!fullPlayer || fullPlayer.classList.contains('hidden')) return;
+
+    const track = this.currentPlaylist && this.currentPlaylist[this.currentIndex];
+    if (!track) return;
+
+    const sfpArtwork = document.getElementById('sfpArtwork');
+    const sfpTitle = document.getElementById('sfpTitle');
+    const sfpArtist = document.getElementById('sfpArtist');
+    const sfpContextTitle = document.getElementById('sfpContextTitle');
+    const sfpLikeBtn = document.getElementById('sfpLikeBtn');
+    const sfpHeartSvg = document.getElementById('sfpHeartSvg');
+    const sfpTotalTime = document.getElementById('sfpTotalTime');
+    const sfpShuffleBtn = document.getElementById('sfpShuffleBtn');
+    const sfpRepeatBtn = document.getElementById('sfpRepeatBtn');
+
+    if (sfpArtwork) sfpArtwork.src = track.artwork || track.image || '';
+    if (sfpTitle) sfpTitle.textContent = track.title || 'Select track';
+    if (sfpArtist) sfpArtist.textContent = track.artist || 'SONiC Engine';
+    if (sfpContextTitle) sfpContextTitle.textContent = track.album || 'SONiC Vault';
+
+    const liked = this.isLiked(track.id);
+    if (sfpLikeBtn) {
+      sfpLikeBtn.classList.toggle('liked', liked);
+      sfpLikeBtn.dataset.id = track.id;
+    }
+    if (sfpHeartSvg) {
+      sfpHeartSvg.style.fill = liked ? '#1ed760' : 'currentColor';
+    }
+
+    if (sfpShuffleBtn) sfpShuffleBtn.classList.toggle('active-btn', this.isShuffle);
+    if (sfpRepeatBtn) sfpRepeatBtn.classList.toggle('active-btn', this.isRepeat);
+
+    let dur = this.dom.audio.duration;
+    if (!dur || !isFinite(dur) || dur <= 0) {
+      dur = track && track.durationMs ? track.durationMs / 1000 : 215;
+    }
+    if (sfpTotalTime) {
+      sfpTotalTime.textContent = this.formatSeconds(dur);
+    }
+
+    this.renderFullPlayerPlayPause(!this.dom.audio.paused && !this.dom.audio.ended && this.dom.audio.currentTime > 0);
+  }
+
+  renderFullPlayerPlayPause(isPlaying) {
+    const sfpPlayIconSvg = document.getElementById('sfpPlayIconSvg');
+    if (!sfpPlayIconSvg) return;
+    if (isPlaying) {
+      sfpPlayIconSvg.innerHTML = `<path fill="#000000" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>`;
+    } else {
+      sfpPlayIconSvg.innerHTML = `<path fill="#000000" d="M8 5v14l11-7z"/>`;
     }
   }
 
@@ -2398,6 +2649,16 @@ class SonicEngine {
     }
     this.dom.currentTime.textContent = this.formatSeconds(cur);
     this.dom.totalTime.textContent = this.formatSeconds(dur);
+
+    // Update Spotify Mobile Full-Screen Player Scrubber & Times
+    const sfpProgressFill = document.getElementById('sfpProgressFill');
+    const sfpProgressKnob = document.getElementById('sfpProgressKnob');
+    const sfpCurrentTime = document.getElementById('sfpCurrentTime');
+    const sfpTotalTime = document.getElementById('sfpTotalTime');
+    if (sfpProgressFill) sfpProgressFill.style.width = `${percent}%`;
+    if (sfpProgressKnob) sfpProgressKnob.style.left = `${percent}%`;
+    if (sfpCurrentTime) sfpCurrentTime.textContent = this.formatSeconds(cur);
+    if (sfpTotalTime) sfpTotalTime.textContent = this.formatSeconds(dur);
 
     if (this.isLyricsOpen) {
       this.syncLyricsTime(cur);
@@ -2512,10 +2773,25 @@ class SonicEngine {
     `;
 
     try {
-      const cleanTitle = encodeURIComponent((track.title || '').replace(/[\(\)\[\]\-]/g, ' ').trim());
-      const cleanArtist = encodeURIComponent((track.artist || '').trim());
-      const res = await fetch(`/api/lyrics?track=${cleanTitle}&artist=${cleanArtist}`);
-      const data = await res.json();
+      const cleanTitle = (track.title || '').replace(/[\(\)\[\]\-]/g, ' ').trim();
+      const cleanArtist = (track.artist || '').trim();
+      let data = null;
+
+      // 1. Native Android Bridge
+      if (window.SonicNative?.resolveLyrics) {
+        try {
+          const raw = window.SonicNative.resolveLyrics(cleanTitle, cleanArtist);
+          data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        } catch(e) {}
+      }
+
+      // 2. HTTP Server Endpoint
+      if (!data && window.location.protocol.startsWith('http')) {
+        try {
+          const res = await fetch(`/api/lyrics?track=${encodeURIComponent(cleanTitle)}&artist=${encodeURIComponent(cleanArtist)}`);
+          if (res.ok) data = await res.json();
+        } catch(e) {}
+      }
 
       if (data && data.success && Array.isArray(data.lines) && data.lines.length > 0) {
         this.currentLyricsLines = data.lines;
@@ -3591,7 +3867,14 @@ class SonicEngine {
 
   escapeHtml(str) {
     if (!str) return '';
-    return str.replace(/[&<>'"]/g, tag => ({
+    const clean = String(str)
+      .replace(/&quot;/g, '"')
+      .replace(/&#039;/g, "'")
+      .replace(/&apos;/g, "'")
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>');
+    return clean.replace(/[&<>'"]/g, tag => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
     }[tag] || tag));
   }
@@ -3907,19 +4190,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // Dynamic Live New Releases Fetcher Function
   async function fetchLiveNewReleases() {
     try {
-      // 1. Instant local cache display (0ms lag)
-      const cached = localStorage.getItem('sonic_live_new_releases');
-      if (cached) {
-        try {
-          const parsed = JSON.parse(cached);
-          if (Array.isArray(parsed) && parsed.length > 0 && typeof SONIC_CATALOG !== 'undefined') {
-            SONIC_CATALOG.newMusic = parsed;
-            if (window.sonic?.renderShelf) {
-              window.sonic.renderShelf('shelfNewMusic', parsed);
-            }
-          }
-        } catch(e) {}
+      // Clear any legacy bad cache once
+      if (localStorage.getItem('sonic_bad_cache_cleared_v2') !== '1') {
+        localStorage.removeItem('sonic_live_new_releases');
+        localStorage.setItem('sonic_bad_cache_cleared_v2', '1');
       }
+
+      // 1. Curated base tracks from SONIC_CATALOG
+      const baseTracks = (typeof SONIC_CATALOG !== 'undefined' && Array.isArray(SONIC_CATALOG.newMusic))
+        ? [...SONIC_CATALOG.newMusic]
+        : [];
 
       // 2. Query Native Android Bridge first (direct local native speed, no file scheme limits)
       let liveTracks = [];
@@ -3936,9 +4216,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // 3. Fallback: Direct JioSaavn HTTPS Search
-      if (!liveTracks.length) {
+      if (!liveTracks.length && window.location.protocol.startsWith('http')) {
         try {
-          const res = await fetch('https://www.jiosaavn.com/api.php?__call=search.getResults&_format=json&n=30&p=1&q=Latest%20Hindi%20Songs');
+          const res = await fetch('https://www.jiosaavn.com/api.php?__call=search.getResults&_format=json&n=25&p=1&q=Latest%20Hindi%20Songs');
           if (res.ok) {
             const data = await res.json();
             const results = data.results || data.data?.results || [];
@@ -3950,7 +4230,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 album: (r.album || 'Single').replace(/&quot;/g, '"').replace(/&#039;/g, "'").replace(/&amp;/g, '&'),
                 image: (r.image || '').replace('150x150', '500x500'),
                 duration: r.duration ? parseInt(r.duration) : 210,
-                year: r.year || '2025',
+                year: r.year || '2026',
                 streamUrl: r.media_preview_url || '',
                 audioUrl: r.media_preview_url || ''
               })).filter(t => t.title && t.artist);
@@ -3961,19 +4241,97 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      // 4. Inject live tracks, store in cache, and update UI
+      // 4. Merge live tracks with curated tracks (keep curated hits pinned at front with authentic artwork)
       if (liveTracks && liveTracks.length > 0) {
-        localStorage.setItem('sonic_live_new_releases', JSON.stringify(liveTracks));
+        const seen = new Set(baseTracks.map(t => (t.title || '').toLowerCase().replace(/[^a-z0-9]/g, '')));
+        const fresh = [];
+        liveTracks.forEach(lt => {
+          const key = (lt.title || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (!seen.has(key)) {
+            seen.add(key);
+            fresh.push(lt);
+          }
+        });
+
+        const merged = baseTracks.concat(fresh);
         if (typeof SONIC_CATALOG !== 'undefined') {
-          SONIC_CATALOG.newMusic = liveTracks;
+          SONIC_CATALOG.newMusic = merged;
         }
         if (window.sonic?.renderShelf) {
-          window.sonic.renderShelf('shelfNewMusic', liveTracks);
+          window.sonic.renderShelf('shelfNewMusic', merged);
         }
-        console.log('Live New Releases dynamically synchronized: ' + liveTracks.length + ' tracks');
+        console.log('Live New Releases synchronized with curated hits: ' + merged.length + ' tracks');
       }
     } catch(err) {
       console.warn('fetchLiveNewReleases error:', err);
     }
   }
+
+  // System Hardware Back Button Handler for Android WebView
+  window.handleSonicBack = function() {
+    // 1. If full player open, close it
+    const fullPlayer = document.getElementById('spotifyFullPlayer');
+    if (fullPlayer && !fullPlayer.classList.contains('hidden')) {
+      if (window.sonic?.closeFullPlayer) {
+        window.sonic.closeFullPlayer();
+        return true;
+      }
+      fullPlayer.classList.add('hidden');
+      return true;
+    }
+
+    // 2. If lyrics view open, close it
+    const lyricsView = document.getElementById('lyricsView');
+    if (lyricsView && !lyricsView.classList.contains('hidden')) {
+      if (window.sonic?.switchView) window.sonic.switchView('browse');
+      return true;
+    }
+
+    // 3. If detail view open, go back to browse
+    const detailView = document.getElementById('detailView');
+    if (detailView && !detailView.classList.contains('hidden')) {
+      if (window.sonic?.switchView) window.sonic.switchView('browse');
+      return true;
+    }
+
+    // 4. If show all view open, go back to browse
+    const showAllView = document.getElementById('showAllView');
+    if (showAllView && !showAllView.classList.contains('hidden')) {
+      if (window.sonic?.switchView) window.sonic.switchView('browse');
+      return true;
+    }
+
+    // 5. If liked songs view open, go back to browse
+    const likedView = document.getElementById('likedSongsView');
+    if (likedView && !likedView.classList.contains('hidden')) {
+      if (window.sonic?.switchView) window.sonic.switchView('browse');
+      return true;
+    }
+
+    // 6. If search tab is showing search results, clear search results and reset categories
+    const searchTab = document.getElementById('mobileTabSearch');
+    const searchResults = document.getElementById('tabSearchResultsContainer');
+    if (searchTab && !searchTab.classList.contains('hidden') && searchResults && !searchResults.classList.contains('hidden')) {
+      const tabSearchInput = document.getElementById('tabSearchInput');
+      const tabClearBtn = document.getElementById('tabSearchClearBtn');
+      if (tabSearchInput) tabSearchInput.value = '';
+      tabClearBtn?.classList.add('hidden');
+      searchResults.classList.add('hidden');
+      document.getElementById('searchTabCategories')?.classList.remove('hidden');
+      const tabSongsList = document.getElementById('tabSongsList');
+      if (tabSongsList) tabSongsList.innerHTML = '';
+      return true;
+    }
+
+    // 7. If currently on Search or Library tab, navigate back to Home tab
+    const activeNav = document.querySelector('.mob-nav-item.active');
+    if (activeNav && activeNav.dataset.tab !== 'home') {
+      if (window.switchMobileTab) {
+        window.switchMobileTab('home');
+        return true;
+      }
+    }
+
+    return false;
+  };
 })();

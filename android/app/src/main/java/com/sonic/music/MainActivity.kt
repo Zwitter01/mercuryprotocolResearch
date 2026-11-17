@@ -332,11 +332,15 @@ class MainActivity : ComponentActivity() {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        if (webView.canGoBack()) {
-            webView.goBack()
-        } else {
-            // Keep playback running in background on back press
-            moveTaskToBack(true)
+        webView.evaluateJavascript("window.handleSonicBack ? window.handleSonicBack() : false") { result ->
+            if (result != "true") {
+                if (webView.canGoBack()) {
+                    webView.goBack()
+                } else {
+                    // Keep playback running in background on back press
+                    moveTaskToBack(true)
+                }
+            }
         }
     }
 

@@ -1185,6 +1185,100 @@
         <span>Your Library</span>
       </button>
     </nav>
+
+  <!-- SPOTIFY MOBILE FULL-SCREEN NOW PLAYING SCREEN (1:1 with Spotify Mobile) -->
+  <div id="spotifyFullPlayer" class="spotify-full-player hidden">
+    <!-- Top Navigation Header -->
+    <div class="sfp-header">
+      <button id="sfpCloseBtn" class="sfp-icon-btn" aria-label="Collapse player">
+        <svg viewBox="0 0 24 24" class="sfp-svg-down"><path fill="currentColor" d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+      </button>
+      <div class="sfp-header-meta">
+        <span class="sfp-header-context">PLAYING FROM PLAYLIST</span>
+        <span id="sfpContextTitle" class="sfp-header-title">SONiC Hits</span>
+      </div>
+      <button id="sfpMoreBtn" class="sfp-icon-btn" aria-label="More options">
+        <svg viewBox="0 0 24 24" class="sfp-svg"><path fill="currentColor" d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+      </button>
+    </div>
+
+    <!-- Scrollable Body for Album Art, Controls, Lyrics -->
+    <div class="sfp-body">
+      <!-- High-Res Album Artwork -->
+      <div class="sfp-artwork-container">
+        <img id="sfpArtwork" src="" alt="Album Artwork" class="sfp-artwork" onerror="window.handleImgError(this)">
+      </div>
+
+      <!-- Track Info & Like Button -->
+      <div class="sfp-info-row">
+        <div class="sfp-meta">
+          <div id="sfpTitle" class="sfp-title">Select any track to play</div>
+          <div id="sfpArtist" class="sfp-artist">SONiC Engine</div>
+        </div>
+        <button id="sfpLikeBtn" class="sfp-like-btn" title="Save to Your Library">
+          <svg viewBox="0 0 24 24" class="sfp-heart-svg" id="sfpHeartSvg">
+            <path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Scrubbable Progress Bar -->
+      <div class="sfp-progress-wrap">
+        <div id="sfpProgressTrack" class="sfp-progress-track">
+          <div id="sfpProgressFill" class="sfp-progress-fill"></div>
+          <div id="sfpProgressKnob" class="sfp-progress-knob"></div>
+        </div>
+        <div class="sfp-times">
+          <span id="sfpCurrentTime" class="sfp-time">0:00</span>
+          <span id="sfpTotalTime" class="sfp-time">0:00</span>
+        </div>
+      </div>
+
+      <!-- Main Playback Controls Bar -->
+      <div class="sfp-controls">
+        <button id="sfpShuffleBtn" class="sfp-ctrl-btn" title="Enable shuffle">
+          <svg viewBox="0 0 16 16" class="sfp-ctrl-svg"><path fill="currentColor" d="M13.151.922a.75.75 0 1 0-1.06 1.06L13.109 3H11.16a3.75 3.75 0 0 0-2.873 1.34l-6.173 7.356A2.25 2.25 0 0 1 .39 12.5H0V14h.39a3.75 3.75 0 0 0 2.873-1.34l6.173-7.356A2.25 2.25 0 0 1 11.16 4.5h1.948l-1.018 1.018a.75.75 0 0 0 1.06 1.06L15.939 3.78a.75.75 0 0 0 0-1.06L13.15.922zM.39 3.5A2.25 2.25 0 0 1 2.113 2.66l2.12 2.524a.75.75 0 1 0 1.148-.964L3.26 1.696A3.75 3.75 0 0 0 .39 2H0v1.5h.39zm10.77 8a2.25 2.25 0 0 1-1.723-.84l-2.12-2.524a.75.75 0 1 0-1.148.964l2.12 2.524a3.75 3.75 0 0 0 2.871 1.376h1.948l-1.018 1.018a.75.75 0 0 0 1.06 1.06l2.788-2.788a.75.75 0 0 0 0-1.06l-2.788-2.788a.75.75 0 0 0-1.06 1.06l1.018 1.018H11.16z"/></svg>
+        </button>
+        <button id="sfpPrevBtn" class="sfp-ctrl-btn sfp-skip-btn" title="Previous">
+          <svg viewBox="0 0 16 16" class="sfp-skip-svg"><path fill="currentColor" d="M3.3 1a.7.7 0 0 1 .7.7v5.15l9.95-5.744a.7.7 0 0 1 1.05.606v12.576a.7.7 0 0 1-1.05.607L4 9.149V14.3a.7.7 0 0 1-.7.7H1.7a.7.7 0 0 1-.7-.7V1.7a.7.7 0 0 1 .7-.7h1.6z"/></svg>
+        </button>
+        <button id="sfpPlayPauseBtn" class="sfp-play-btn" title="Play">
+          <svg viewBox="0 0 16 16" class="sfp-play-svg" id="sfpPlayIconSvg"><path fill="#000" d="M3 1.713a.7.7 0 0 1 1.05-.607l10.89 6.288a.7.7 0 0 1 0 1.212L4.05 14.894A.7.7 0 0 1 3 14.288V1.713z"/></svg>
+        </button>
+        <button id="sfpNextBtn" class="sfp-ctrl-btn sfp-skip-btn" title="Next">
+          <svg viewBox="0 0 16 16" class="sfp-skip-svg"><path fill="currentColor" d="M12.7 1a.7.7 0 0 0-.7.7v5.15L2.05 1.107A.7.7 0 0 0 1 1.714v12.572a.7.7 0 0 0 1.05.607L12 9.149V14.3a.7.7 0 0 0 .7.7h1.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7h-1.6z"/></svg>
+        </button>
+        <button id="sfpRepeatBtn" class="sfp-ctrl-btn" title="Enable repeat">
+          <svg viewBox="0 0 16 16" class="sfp-ctrl-svg"><path fill="currentColor" d="M0 4.75A3.75 3.75 0 0 1 3.75 1h8.5A3.75 3.75 0 0 1 16 4.75v5a3.75 3.75 0 0 1-3.75 3.75H9.81l1.018 1.018a.75.75 0 1 1-1.06 1.06L6.98 12.79a.75.75 0 0 1 0-1.06l2.788-2.788a.75.75 0 1 1 1.06 1.06L9.81 11h2.44A2.25 2.25 0 0 0 14.5 9.75v-5A2.25 2.25 0 0 0 12.25 2.5h-8.5A2.25 2.25 0 0 0 1.5 4.75v5A2.25 2.25 0 0 0 3.75 12H5v1.5H3.75A3.75 3.75 0 0 1 0 9.75v-5z"/></svg>
+        </button>
+      </div>
+
+      <!-- Bottom Utility Bar (Devices & Lyrics) -->
+      <div class="sfp-bottom-tools">
+        <button id="sfpDeviceBtn" class="sfp-tool-btn" title="Audio Quality">
+          <svg viewBox="0 0 24 24" class="sfp-device-svg"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5z"/></svg>
+          <span>320 kbps Studio Lossless</span>
+        </button>
+        <div class="sfp-tool-actions">
+          <button id="sfpLyricsBtn" class="sfp-tool-icon" title="View Lyrics">
+            <svg viewBox="0 0 16 16" width="18" height="18"><path fill="currentColor" d="M13.426 2.574a2.831 2.831 0 0 0-4.797 1.55l3.247 3.246a2.832 2.832 0 0 0 1.55-4.796zM7.21 5.541l3.248 3.248-6.19 6.19a.75.75 0 0 1-.365.198l-2.75.55a.75.75 0 0 1-.882-.882l.55-2.75a.75.75 0 0 1 .198-.364l6.19-6.19z"/></svg>
+          </button>
+          <button id="sfpQueueBtn" class="sfp-tool-icon" title="View Queue">
+            <svg viewBox="0 0 16 16" width="18" height="18"><path fill="currentColor" d="M15 15H1v-1.5h14V15zm0-4.5H1V9h14v1.5zM1 4.5h14V6H1V4.5zM1 0h14v1.5H1V0z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Synced Lyrics Preview Banner -->
+      <div id="sfpLyricsCard" class="sfp-lyrics-card">
+        <div class="sfp-lyrics-header">
+          <span>Lyrics</span>
+          <button id="sfpLyricsExpandBtn" class="sfp-expand-btn">FULL SCREEN</button>
+        </div>
+        <div id="sfpLyricsText" class="sfp-lyrics-text">Tap to sing along with real-time synced lyrics</div>
+      </div>
+    </div>
+  </div>
   <script src="catalog.js"></script>
   <script src="app.js"></script>
   <script src="ux.js"></script>

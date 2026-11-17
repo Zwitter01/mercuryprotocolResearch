@@ -2099,18 +2099,18 @@ html, body {
     letter-spacing: 0.01em !important;
   }
 
-  /* Dedicated Views full height & background */
+  /* Dedicated Views clean fit without empty blank scroll */
   .search-tab-view,
   .library-tab-view {
     background: #121212 !important;
-    min-height: calc(100vh - 60px) !important;
+    min-height: auto !important;
     width: 100% !important;
     box-sizing: border-box !important;
-    padding-bottom: 120px !important;
+    padding-bottom: 72px !important;
   }
 
   .sonic-app {
-    padding-bottom: 70px !important;
+    padding-bottom: 64px !important;
   }
 }
 
@@ -2393,10 +2393,18 @@ body.android-app.tab-library-active .spotify-mobile-header {
     opacity: 1 !important;
     transform: none !important;
     visibility: visible !important;
-    padding: 24px 16px 80px 16px !important;
+    padding: 24px 16px 36px 16px !important;
     margin-top: 24px !important;
     border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
     background: transparent !important;
+  }
+
+  .footer-columns {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 20px 24px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   /* 1:1 SPOTIFY MOBILE DETAIL VIEW (ALBUM / ARTIST / PLAYLIST) */
@@ -2427,9 +2435,9 @@ body.android-app.tab-library-active .spotify-mobile-header {
 
   .detail-hero {
     display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    gap: 14px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
     margin-bottom: 16px !important;
     padding: 0 !important;
     width: 100% !important;
@@ -2438,14 +2446,16 @@ body.android-app.tab-library-active .spotify-mobile-header {
   }
 
   .detail-hero-art {
-    width: 110px !important;
-    height: 110px !important;
-    min-width: 110px !important;
-    min-height: 110px !important;
+    width: 160px !important;
+    height: 160px !important;
+    min-width: 160px !important;
+    min-height: 160px !important;
     border-radius: 8px !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7) !important;
     flex-shrink: 0 !important;
     object-fit: cover !important;
+    margin: 0 auto 4px auto !important;
+    display: block !important;
   }
 
   .detail-hero-art.artist-round {
@@ -2455,40 +2465,34 @@ body.android-app.tab-library-active .spotify-mobile-header {
   .detail-hero-meta {
     display: flex !important;
     flex-direction: column !important;
-    gap: 4px !important;
-    min-width: 0 !important;
-    flex: 1 1 0% !important;
-    overflow: hidden !important;
+    gap: 6px !important;
+    width: 100% !important;
+    text-align: left !important;
   }
 
   .detail-type-badge {
-    font-size: 0.68rem !important;
+    font-size: 0.7rem !important;
     font-weight: 800 !important;
     letter-spacing: 0.08em !important;
-    color: #ff7597 !important;
+    color: #1ed760 !important;
     text-transform: uppercase !important;
   }
 
   .detail-main-title {
-    font-size: 1.25rem !important;
+    font-size: 1.4rem !important;
     font-weight: 800 !important;
     line-height: 1.25 !important;
     letter-spacing: -0.02em !important;
     color: #ffffff !important;
     margin: 0 !important;
-    display: -webkit-box !important;
-    -webkit-line-clamp: 2 !important;
-    -webkit-box-orient: vertical !important;
-    overflow: hidden !important;
+    display: block !important;
     word-break: break-word !important;
   }
 
   .detail-sub-line {
-    font-size: 0.8rem !important;
+    font-size: 0.85rem !important;
     color: #b3b3b3 !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
+    line-height: 1.3 !important;
   }
 
   .detail-actions-bar {
@@ -2791,5 +2795,351 @@ body.android-app,
     transform: translateZ(0);
     backface-visibility: hidden;
   }
+}
+
+/* ==========================================================================
+   SPOTIFY MOBILE FULL-SCREEN NOW PLAYING OVERLAY
+   ========================================================================== */
+.spotify-full-player {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: linear-gradient(180deg, #2b1f3d 0%, #121212 50%, #121212 100%) !important;
+  z-index: 9999999 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  transition: transform 0.28s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.28s ease !important;
+  transform: translateY(0) !important;
+  opacity: 1 !important;
+}
+
+.spotify-full-player.hidden {
+  display: none !important;
+  transform: translateY(100%) !important;
+  opacity: 0 !important;
+}
+
+.sfp-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 40px 16px 12px 16px !important;
+  flex-shrink: 0 !important;
+}
+
+.sfp-icon-btn {
+  background: none !important;
+  border: none !important;
+  color: #ffffff !important;
+  padding: 8px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.sfp-svg-down {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+.sfp-svg {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.sfp-header-meta {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important;
+  min-width: 0 !important;
+  flex: 1 1 0% !important;
+}
+
+.sfp-header-context {
+  font-size: 0.65rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.12em !important;
+  color: #b3b3b3 !important;
+  text-transform: uppercase !important;
+}
+
+.sfp-header-title {
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 200px !important;
+}
+
+.sfp-body {
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 8px 24px 32px 24px !important;
+  box-sizing: border-box !important;
+  flex: 1 1 auto !important;
+}
+
+.sfp-artwork-container {
+  width: 100% !important;
+  max-width: 340px !important;
+  margin: 10px auto 24px auto !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.75) !important;
+  flex-shrink: 0 !important;
+}
+
+.sfp-artwork {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+.sfp-info-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 20px !important;
+  gap: 12px !important;
+}
+
+.sfp-meta {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  min-width: 0 !important;
+  flex: 1 1 0% !important;
+}
+
+.sfp-title {
+  font-size: 1.35rem !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  line-height: 1.25 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.sfp-artist {
+  font-size: 0.95rem !important;
+  color: #b3b3b3 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.sfp-like-btn {
+  background: none !important;
+  border: none !important;
+  color: #b3b3b3 !important;
+  padding: 8px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
+.sfp-like-btn.liked {
+  color: #1ed760 !important;
+}
+
+.sfp-heart-svg {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+.sfp-progress-wrap {
+  margin-bottom: 16px !important;
+  width: 100% !important;
+}
+
+.sfp-progress-track {
+  width: 100% !important;
+  height: 4px !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 4px !important;
+  position: relative !important;
+  cursor: pointer !important;
+  padding: 8px 0 !important;
+  background-clip: content-box !important;
+}
+
+.sfp-progress-fill {
+  height: 4px !important;
+  background: #ffffff !important;
+  border-radius: 4px !important;
+  width: 0% !important;
+  position: absolute !important;
+  top: 8px !important;
+  left: 0 !important;
+}
+
+.sfp-progress-knob {
+  width: 12px !important;
+  height: 12px !important;
+  background: #ffffff !important;
+  border-radius: 50% !important;
+  position: absolute !important;
+  top: 4px !important;
+  left: 0% !important;
+  transform: translateX(-50%) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4) !important;
+}
+
+.sfp-times {
+  display: flex !important;
+  justify-content: space-between !important;
+  margin-top: 4px !important;
+}
+
+.sfp-time {
+  font-size: 0.72rem !important;
+  color: #b3b3b3 !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+.sfp-controls {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 24px !important;
+  width: 100% !important;
+}
+
+.sfp-ctrl-btn {
+  background: none !important;
+  border: none !important;
+  color: #b3b3b3 !important;
+  padding: 8px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.sfp-ctrl-btn.active-btn {
+  color: #1ed760 !important;
+}
+
+.sfp-ctrl-svg {
+  width: 22px !important;
+  height: 22px !important;
+}
+
+.sfp-skip-svg {
+  width: 26px !important;
+  height: 26px !important;
+}
+
+.sfp-play-btn {
+  width: 64px !important;
+  height: 64px !important;
+  min-width: 64px !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  border: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5) !important;
+}
+
+.sfp-play-svg {
+  width: 26px !important;
+  height: 26px !important;
+}
+
+.sfp-bottom-tools {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 20px !important;
+  width: 100% !important;
+}
+
+.sfp-tool-btn {
+  background: none !important;
+  border: none !important;
+  color: #1ed760 !important;
+  font-size: 0.76rem !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 4px 0 !important;
+  cursor: pointer !important;
+}
+
+.sfp-device-svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.sfp-tool-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+.sfp-tool-icon {
+  background: none !important;
+  border: none !important;
+  color: #b3b3b3 !important;
+  cursor: pointer !important;
+  padding: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.sfp-lyrics-card {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-radius: 16px !important;
+  padding: 16px !important;
+  margin-top: 8px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+}
+
+.sfp-lyrics-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 10px !important;
+  font-size: 0.95rem !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+}
+
+.sfp-expand-btn {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: none !important;
+  color: #ffffff !important;
+  padding: 4px 10px !important;
+  border-radius: 500px !important;
+  font-size: 0.68rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+}
+
+.sfp-lyrics-text {
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+  color: rgba(255, 255, 255, 0.9) !important;
 }
 

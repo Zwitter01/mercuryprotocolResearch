@@ -29,8 +29,9 @@
     if (row) row.click();
   });
 
-  // Scroll reveal for shelves
-  if ('IntersectionObserver' in window) {
+  // Scroll reveal for shelves (Desktop only for buttery-smooth 60fps mobile scrolling)
+  var isMobile = window.innerWidth <= 900 || (document.body && document.body.classList.contains('android-app'));
+  if ('IntersectionObserver' in window && !isMobile) {
     root.classList.add('js-reveal');
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
