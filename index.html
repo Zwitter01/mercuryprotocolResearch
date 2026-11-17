@@ -61,7 +61,7 @@
       <!-- Right: Links, Install App, Sign Up, Log In (No Premium) -->
       <div class="nav-right">
         <div class="quick-links">
-          <a href="mailto:victusgeforce14@gmail.com?subject=SONiC%20Music%20Support" id="supportLink" class="nav-text-btn" title="Contact Support: victusgeforce14@gmail.com">Support</a>
+          <a href="mailto:support@sonicmusic.app?subject=SONiC%20Music%20Support" id="supportLink" class="nav-text-btn" title="Contact Support">Support</a>
           <button id="downloadLink" class="nav-text-btn">Download</button>
           <div class="nav-pipe"></div>
           <button id="installAppBtn" class="install-app-btn">
@@ -91,15 +91,18 @@
 
     <!-- Main Workspace (Spotify Sidebar Library + Main Canvas) -->
     
-    <!-- 1:1 SPOTIFY MOBILE SIGNATURE HEADER (Avatar + Category Pills, No Search Bar) -->
+    <!-- 1:1 SPOTIFY MOBILE SIGNATURE HEADER (Avatar + Category Pills + Log in) -->
     <header class="spotify-mobile-header" id="spotifyMobileHeader">
-      <div class="spotify-mob-user-avatar" id="mobTopUserAvatar" onclick="window.switchMobileTab('library')" title="Your Library">V</div>
+      <div class="spotify-mob-user-avatar" id="mobTopUserAvatar" title="Your Account">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path fill="#ffffff" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      </div>
       <div class="spotify-mob-filter-pills" id="mobFilterPills">
         <button class="mob-pill active" data-filter="all">All</button>
         <button class="mob-pill" data-filter="music">Music</button>
         <button class="mob-pill" data-filter="radio">Radio</button>
         <button class="mob-pill" data-filter="trending">Trending</button>
       </div>
+      <button type="button" id="mobLogInBtn" class="mob-login-pill-btn">Log in</button>
     </header>
 
     <div class="app-body">
@@ -500,7 +503,7 @@
               </div>
               <div class="footer-col">
                 <span class="footer-col-title">Useful links</span>
-                <a href="mailto:victusgeforce14@gmail.com?subject=SONiC%20Music%20Support" class="footer-link" title="Contact Support: victusgeforce14@gmail.com">Support</a>
+                <a href="mailto:support@sonicmusic.app?subject=SONiC%20Music%20Support" class="footer-link" title="Contact Support">Support</a>
                 <a href="#mobile" class="footer-link">Free Desktop App</a>
                 <a href="#lyrics" class="footer-link">Top Song Lyrics</a>
                 <a href="#import" class="footer-link">Import your music</a>
@@ -757,7 +760,7 @@
         <section id="libraryTabPrompt" class="library-tab-view hidden">
           <div class="library-tab-header">
             <div class="library-tab-top-row">
-              <div class="library-user-avatar">V</div>
+              <div class="library-user-avatar" id="mobLibUserAvatar" title="Your Account">V</div>
               <h1 class="tab-main-title">Your Library</h1>
               <div class="library-header-actions">
                 <button id="libCreatePlaylistBtn" class="lib-header-icon-btn" title="Create playlist">
@@ -769,6 +772,13 @@
               <button class="lib-chip active" data-libfilter="all">Playlists</button>
               <button class="lib-chip" data-libfilter="artists">Artists</button>
               <button class="lib-chip" data-libfilter="downloaded">Downloaded</button>
+            </div>
+            <div id="mobLibLoginBanner" class="lib-login-banner hidden">
+              <div class="lib-login-banner-text">
+                <h3>Sign in to sync your music</h3>
+                <p>Save liked songs and playlists to your Google account</p>
+              </div>
+              <button type="button" id="mobLibLoginBtn" class="lib-login-pill-btn">Log in free</button>
             </div>
           </div>
 
@@ -1097,7 +1107,7 @@
       <form id="authForm" class="auth-form">
         <div class="form-group">
           <label id="authEmailLabel" for="authUsername">Gmail or Email address</label>
-          <input type="text" id="authUsername" placeholder="e.g. victusgeforce14@gmail.com" required autocomplete="username">
+          <input type="text" id="authUsername" placeholder="name@gmail.com or username" required autocomplete="username">
         </div>
         <div class="form-group">
           <label for="authPassword">Password</label>
@@ -1124,12 +1134,12 @@
       </div>
 
       <div class="google-accounts-list">
-        <!-- Main User Account (victusgeforce14@gmail.com) -->
-        <div class="google-acc-row" id="googleSelectDefaultAcc" title="Sign in as Vishal (victusgeforce14@gmail.com)">
+        <!-- Main User Account -->
+        <div class="google-acc-row" id="googleSelectDefaultAcc" title="Sign in with Google">
           <div class="google-acc-avatar">V</div>
           <div class="google-acc-info">
             <div class="google-acc-name">Vishal</div>
-            <div class="google-acc-email">victusgeforce14@gmail.com</div>
+            <div class="google-acc-email">v•••••••@gmail.com</div>
           </div>
           <span class="google-check-badge">Google Verified</span>
         </div>
@@ -1149,6 +1159,31 @@
       <div class="google-chooser-footer">
         <p>To continue, Google will securely share your profile and email with SONiC.</p>
         <button type="button" id="closeGoogleChooserBtn" class="google-cancel-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Profile / Account Modal (Mobile & Desktop) -->
+  <div id="userProfileModal" class="modal-overlay hidden" style="z-index: 10000000;">
+    <div class="user-profile-modal-card">
+      <button id="closeProfileModalBtn" class="modal-close-btn">&times;</button>
+      <div class="profile-modal-header">
+        <div id="profileModalAvatar" class="profile-modal-avatar">V</div>
+        <div class="profile-modal-info">
+          <h2 id="profileModalName">Vishal</h2>
+          <p id="profileModalEmail">v•••••••@gmail.com</p>
+          <span id="profileModalBadge" class="profile-badge-pill">Google Account</span>
+        </div>
+      </div>
+      <div class="profile-modal-actions">
+        <button type="button" id="profileSwitchAccBtn" class="profile-action-btn">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          <span>Switch Account</span>
+        </button>
+        <button type="button" id="profileLogOutBtn" class="profile-action-btn logout-danger">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+          <span>Log out</span>
+        </button>
       </div>
     </div>
   </div>

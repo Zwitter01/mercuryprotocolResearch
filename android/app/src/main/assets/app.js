@@ -832,7 +832,7 @@ class SonicEngine {
     // 3. Quick Links
     if (this.dom.supportLink) {
       this.dom.supportLink.addEventListener('click', () => {
-        this.showToast('Opening Support: victusgeforce14@gmail.com');
+        this.showToast('Opening Support: support@sonicmusic.app');
       });
     }
     if (this.dom.downloadLink) {
@@ -954,6 +954,49 @@ class SonicEngine {
     if (this.dom.authForm) this.dom.authForm.addEventListener('submit', (e) => this.handleAuthSubmit(e));
     if (this.dom.logOutBtn) this.dom.logOutBtn.addEventListener('click', () => this.handleLogOut());
 
+    // Mobile Auth Triggers
+    const mobLogInBtn = document.getElementById('mobLogInBtn');
+    if (mobLogInBtn) mobLogInBtn.addEventListener('click', () => this.openAuthModal('login'));
+
+    const mobLibLoginBtn = document.getElementById('mobLibLoginBtn');
+    if (mobLibLoginBtn) mobLibLoginBtn.addEventListener('click', () => this.openAuthModal('login'));
+
+    const mobTopUserAvatar = document.getElementById('mobTopUserAvatar');
+    if (mobTopUserAvatar) {
+      mobTopUserAvatar.addEventListener('click', () => {
+        if (this.currentUser) this.openProfileModal();
+        else this.openAuthModal('login');
+      });
+    }
+
+    const mobLibUserAvatar = document.getElementById('mobLibUserAvatar');
+    if (mobLibUserAvatar) {
+      mobLibUserAvatar.addEventListener('click', () => {
+        if (this.currentUser) this.openProfileModal();
+        else this.openAuthModal('login');
+      });
+    }
+
+    // User Profile Modal Actions
+    const closeProfileModalBtn = document.getElementById('closeProfileModalBtn');
+    if (closeProfileModalBtn) closeProfileModalBtn.addEventListener('click', () => this.closeProfileModal());
+
+    const profileSwitchAccBtn = document.getElementById('profileSwitchAccBtn');
+    if (profileSwitchAccBtn) {
+      profileSwitchAccBtn.addEventListener('click', () => {
+        this.closeProfileModal();
+        if (this.dom.googleChooserModal) this.dom.googleChooserModal.classList.remove('hidden');
+      });
+    }
+
+    const profileLogOutBtn = document.getElementById('profileLogOutBtn');
+    if (profileLogOutBtn) {
+      profileLogOutBtn.addEventListener('click', () => {
+        this.closeProfileModal();
+        this.handleLogOut();
+      });
+    }
+
     // Google 1-Click Fast Sign-In Events
     if (this.dom.googleAuthBtn) {
       this.dom.googleAuthBtn.addEventListener('click', () => {
@@ -967,7 +1010,7 @@ class SonicEngine {
     }
     if (this.dom.googleSelectDefaultAcc) {
       this.dom.googleSelectDefaultAcc.addEventListener('click', () => {
-        this.loginWithGoogleAccount('victusgeforce14@gmail.com', 'Vishal');
+        this.loginWithGoogleAccount('vishal@gmail.com', 'Vishal');
       });
     }
     if (this.dom.googleSelectOtherAcc) {
@@ -3591,7 +3634,7 @@ class SonicEngine {
     }
   }
 
-  loginWithGoogleAccount(email = 'victusgeforce14@gmail.com', name = 'Vishal') {
+  loginWithGoogleAccount(email = 'vishal@gmail.com', name = 'Vishal') {
     const users = this.getAllUsers();
     let user = users.find(u => (u.email && u.email.toLowerCase() === email.toLowerCase()));
 
@@ -3611,7 +3654,7 @@ class SonicEngine {
     this.saveActiveSession(user);
     if (this.dom.googleChooserModal) this.dom.googleChooserModal.classList.add('hidden');
     this.closeAuthModal();
-    this.showToast(`Logged in with Google (${email})`);
+    this.showToast(`Logged in with Google as ${name}`);
   }
 
   handleLogOut() {
@@ -3619,21 +3662,68 @@ class SonicEngine {
     this.showToast('Logged out of SONiC');
   }
 
+  openProfileModal() {
+    const modal = document.getElementById('userProfileModal');
+    if (!modal) return;
+    if (this.currentUser) {
+      const name = this.currentUser.displayName || this.currentUser.username || 'User';
+      const rawEmail = this.currentUser.email || (this.currentUser.username ? `${this.currentUser.username}@gmail.com` : 'user@gmail.com');
+      const maskedEmail = rawEmail.includes('@') ? (rawEmail.split('@')[0].charAt(0) + '•••••••@' + rawEmail.split('@')[1]) : rawEmail;
+      const avatar = document.getElementById('profileModalAvatar');
+      const nameEl = document.getElementById('profileModalName');
+      const emailEl = document.getElementById('profileModalEmail');
+      const badgeEl = document.getElementById('profileModalBadge');
+
+      if (avatar) {
+        avatar.textContent = name.charAt(0).toUpperCase();
+        avatar.style.background = this.currentUser.provider === 'google' ? '#1a73e8' : '#1ed760';
+      }
+      if (nameEl) nameEl.textContent = name;
+      if (emailEl) emailEl.textContent = maskedEmail;
+      if (badgeEl) {
+        badgeEl.textContent = this.currentUser.provider === 'google' ? 'Google Account' : 'SONiC Account';
+      }
+    }
+    modal.classList.remove('hidden');
+  }
+
+  closeProfileModal() {
+    const modal = document.getElementById('userProfileModal');
+    if (modal) modal.classList.add('hidden');
+  }
+
   updateAuthUI() {
+    const mobLogInBtn = document.getElementById('mobLogInBtn');
+    const mobLibLoginBanner = document.getElementById('mobLibLoginBanner');
+    const mobTopUserAvatar = document.getElementById('mobTopUserAvatar');
+    const mobLibUserAvatar = document.getElementById('mobLibUserAvatar');
+
     if (this.currentUser) {
       this.dom.authGuestGroup.classList.add('hidden');
       this.dom.authUserGroup.classList.remove('hidden');
 
       const name = this.currentUser.displayName || this.currentUser.username;
+      const initial = name.charAt(0).toUpperCase();
       this.dom.userDisplayName.textContent = name;
-      this.dom.userAvatarChar.textContent = name.charAt(0).toUpperCase();
+      this.dom.userAvatarChar.textContent = initial;
 
+      const avatarBg = this.currentUser.provider === 'google' ? '#1a73e8' : 'var(--spotify-green)';
+      this.dom.userAvatarChar.style.background = avatarBg;
       if (this.currentUser.provider === 'google') {
-        this.dom.userAvatarChar.style.background = '#1a73e8';
         this.dom.userAvatarChar.title = `Google Account: ${this.currentUser.email || this.currentUser.username}`;
-      } else {
-        this.dom.userAvatarChar.style.background = 'var(--spotify-green)';
       }
+
+      if (mobTopUserAvatar) {
+        mobTopUserAvatar.innerHTML = initial;
+        mobTopUserAvatar.style.background = avatarBg;
+        mobTopUserAvatar.title = `Signed in as ${name}`;
+      }
+      if (mobLibUserAvatar) {
+        mobLibUserAvatar.innerHTML = initial;
+        mobLibUserAvatar.style.background = avatarBg;
+      }
+      if (mobLogInBtn) mobLogInBtn.classList.add('hidden');
+      if (mobLibLoginBanner) mobLibLoginBanner.classList.add('hidden');
 
       // Hide promo box completely when user is logged in
       if (this.dom.sidebarPromoBox) {
@@ -3642,6 +3732,19 @@ class SonicEngine {
     } else {
       this.dom.authGuestGroup.classList.remove('hidden');
       this.dom.authUserGroup.classList.add('hidden');
+
+      const guestSvg = `<svg viewBox="0 0 24 24" width="18" height="18"><path fill="#ffffff" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
+      if (mobTopUserAvatar) {
+        mobTopUserAvatar.innerHTML = guestSvg;
+        mobTopUserAvatar.style.background = '#282828';
+        mobTopUserAvatar.title = 'Log in / Sign up';
+      }
+      if (mobLibUserAvatar) {
+        mobLibUserAvatar.innerHTML = guestSvg;
+        mobLibUserAvatar.style.background = '#282828';
+      }
+      if (mobLogInBtn) mobLogInBtn.classList.remove('hidden');
+      if (mobLibLoginBanner) mobLibLoginBanner.classList.remove('hidden');
 
       if (this.dom.sidebarPromoBox) {
         this.dom.sidebarPromoBox.classList.remove('hidden');
