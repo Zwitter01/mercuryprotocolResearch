@@ -420,6 +420,7 @@ object SonicApiResolver {
         val cacheKey = "${cleanTrack.lowercase()}___${cleanArtist.lowercase()}"
         lyricsCache[cacheKey]?.let { return it }
 
+        // Strategy 1: Exact GET by track_name & artist_name
         try {
             val encTrack = URLEncoder.encode(cleanTrack, "UTF-8")
             val encArtist = URLEncoder.encode(cleanArtist, "UTF-8")
@@ -436,15 +437,87 @@ object SonicApiResolver {
                     val synced = root.optString("syncedLyrics", "")
                     val plain = root.optString("plainLyrics", "")
                     if (synced.isNotBlank() || plain.isNotBlank()) {
-                        val linesArr = parseLrc(synced)
-                        val payload = JSONObject().apply {
-                            put("success", true)
-                            put("synced", synced.isNotBlank())
-                            put("lines", linesArr)
-                            put("plain", plain)
-                        }.toString()
-                        lyricsCache[cacheKey] = payload
-                        return payload
+                        val linesArr = parseLrc(synced, plain)
+                        if (linesArr.length() > 0) {
+                            val payload = JSONObject().apply {
+                                put("success", true)
+                                put("synced", synced.isNotBlank())
+                                put("lines", linesArr)
+                                put("plain", plain)
+                            }.toString()
+                            lyricsCache[cacheKey] = payload
+                            return payload
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {}
+
+        // Strategy 2: LRCLIB Search by "Track Artist"
+        try {
+            val encQuery = URLEncoder.encode("$cleanTrack $cleanArtist", "UTF-8")
+            val searchUrl = "https://lrclib.net/api/search?q=$encQuery"
+            val req = Request.Builder()
+                .url(searchUrl)
+                .header("User-Agent", "Mozilla/5.0 SONiC Music/2.0")
+                .build()
+
+            httpClient.newCall(req).execute().use { resp ->
+                if (resp.isSuccessful) {
+                    val bodyStr = resp.body?.string() ?: ""
+                    val arr = JSONArray(bodyStr)
+                    for (i in 0 until arr.length()) {
+                        val root = arr.getJSONObject(i)
+                        val synced = root.optString("syncedLyrics", "")
+                        val plain = root.optString("plainLyrics", "")
+                        if (synced.isNotBlank() || plain.isNotBlank()) {
+                            val linesArr = parseLrc(synced, plain)
+                            if (linesArr.length() > 0) {
+                                val payload = JSONObject().apply {
+                                    put("success", true)
+                                    put("synced", synced.isNotBlank())
+                                    put("lines", linesArr)
+                                    put("plain", plain)
+                                }.toString()
+                                lyricsCache[cacheKey] = payload
+                                return payload
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {}
+
+        // Strategy 3: LRCLIB Search by Track Name Only
+        try {
+            val encTrack = URLEncoder.encode(cleanTrack, "UTF-8")
+            val searchUrl = "https://lrclib.net/api/search?track_name=$encTrack"
+            val req = Request.Builder()
+                .url(searchUrl)
+                .header("User-Agent", "Mozilla/5.0 SONiC Music/2.0")
+                .build()
+
+            httpClient.newCall(req).execute().use { resp ->
+                if (resp.isSuccessful) {
+                    val bodyStr = resp.body?.string() ?: ""
+                    val arr = JSONArray(bodyStr)
+                    for (i in 0 until arr.length()) {
+                        val root = arr.getJSONObject(i)
+                        val synced = root.optString("syncedLyrics", "")
+                        val plain = root.optString("plainLyrics", "")
+                        if (synced.isNotBlank() || plain.isNotBlank()) {
+                            val linesArr = parseLrc(synced, plain)
+                            if (linesArr.length() > 0) {
+                                val payload = JSONObject().apply {
+                                    put("success", true)
+                                    put("synced", synced.isNotBlank())
+                                    put("lines", linesArr)
+                                    put("plain", plain)
+                                }.toString()
+                                lyricsCache[cacheKey] = payload
+                                return payload
+                            }
+                        }
                     }
                 }
             }
@@ -453,30 +526,45 @@ object SonicApiResolver {
         return """{"success":false,"error":"Lyrics not found"}"""
     }
 
-    private fun parseLrc(lrcText: String): JSONArray {
+    private fun parseLrc(lrcText: String, plainText: String = ""): JSONArray {
         val arr = JSONArray()
-        if (lrcText.isBlank()) return arr
-        val lines = lrcText.split("\n")
-        val regex = Regex("""\[(\d{2}):(\d{2})\.(\d{2,3})\](.*)""")
+        if (lrcText.isNotBlank()) {
+            val lines = lrcText.split("\n")
+            val regex = Regex("""\[(\d{2}):(\d{2})\.(\d{2,3})\](.*)""")
 
-        for (line in lines) {
-            val match = regex.find(line.trim())
-            if (match != null) {
-                val mins = match.groupValues[1].toDoubleOrNull() ?: 0.0
-                val secs = match.groupValues[2].toDoubleOrNull() ?: 0.0
-                val msStr = match.groupValues[3].padEnd(3, '0').take(3)
-                val ms = msStr.toDoubleOrNull() ?: 0.0
-                val time = mins * 60 + secs + ms / 1000.0
-                val text = match.groupValues[4].trim()
-                if (text.isNotBlank()) {
-                    val item = JSONObject().apply {
-                        put("time", time)
-                        put("text", text)
+            for (line in lines) {
+                val match = regex.find(line.trim())
+                if (match != null) {
+                    val mins = match.groupValues[1].toDoubleOrNull() ?: 0.0
+                    val secs = match.groupValues[2].toDoubleOrNull() ?: 0.0
+                    val msStr = match.groupValues[3].padEnd(3, '0').take(3)
+                    val ms = msStr.toDoubleOrNull() ?: 0.0
+                    val time = mins * 60 + secs + ms / 1000.0
+                    val text = match.groupValues[4].trim()
+                    if (text.isNotBlank()) {
+                        val item = JSONObject().apply {
+                            put("time", time)
+                            put("text", text)
+                        }
+                        arr.put(item)
                     }
-                    arr.put(item)
                 }
             }
         }
+
+        // If no synced lines parsed, convert plain text lines
+        if (arr.length() == 0 && plainText.isNotBlank()) {
+            val pLines = plainText.split("\n").map { it.trim() }.filter { it.isNotBlank() }
+            val interval = if (pLines.isNotEmpty()) 210.0 / pLines.size else 4.0
+            pLines.forEachIndexed { idx, txt ->
+                val obj = JSONObject().apply {
+                    put("time", idx * interval)
+                    put("text", txt)
+                }
+                arr.put(obj)
+            }
+        }
+
         return arr
     }
 

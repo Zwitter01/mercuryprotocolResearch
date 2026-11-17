@@ -2018,7 +2018,7 @@ html, body {
   .search-tab-view,
   .library-tab-view {
     background-color: #121212 !important;
-    min-height: 100vh !important;
+    min-height: auto !important;
   }
 }
 
@@ -2393,7 +2393,7 @@ body.android-app.tab-library-active .spotify-mobile-header {
     opacity: 1 !important;
     transform: none !important;
     visibility: visible !important;
-    padding: 24px 16px 36px 16px !important;
+    padding: 24px 16px 125px 16px !important;
     margin-top: 24px !important;
     border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
     background: transparent !important;
@@ -2402,9 +2402,10 @@ body.android-app.tab-library-active .spotify-mobile-header {
   .footer-columns {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 20px 24px !important;
+    gap: 20px 20px !important;
     width: 100% !important;
     box-sizing: border-box !important;
+    align-items: start !important;
   }
 
   /* 1:1 SPOTIFY MOBILE DETAIL VIEW (ALBUM / ARTIST / PLAYLIST) */

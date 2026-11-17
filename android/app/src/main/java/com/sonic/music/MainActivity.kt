@@ -101,7 +101,7 @@ class MainActivity : ComponentActivity() {
             }
             "com.sonic.music.ACTION_OPEN_DETAIL" -> {
                 runOnUiThread {
-                    webView.evaluateJavascript("window.sonic?.openEntityDetail?.({ title: 'Tauba Tauba (From \"Bad Newz\")', subtitle: 'Karan Aujla • Latest Chartbusters', type: 'Playlist', image: 'https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/4b/3b/68/4b3b6833-2895-46e2-2a5b-ee93bfbca658/198588523315.jpg/300x300bb.jpg' });", null)
+                    webView.evaluateJavascript("window.sonic?.openEntityDetail?.({ title: 'Tauba Tauba (From \"Bad Newz\")', subtitle: 'Karan Aujla • Latest Chartbusters', type: 'Playlist', image: 'https://c.saavncdn.com/719/Tauba-Tauba-From-Bad-Newz-Hindi-2024-20250730113701-500x500.jpg' });", null)
                 }
             }
             ACTION_EVAL -> {

@@ -733,14 +733,14 @@ const SONIC_CATALOG = {
       title: 'Tauba Tauba (From "Bad Newz")',
       subtitle: 'Karan Aujla • Latest Chartbuster',
       query: 'Tauba Tauba Karan Aujla',
-      image: 'https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/79/d2/01/79d201d2-e54d-5604-81fb-313f30db7219/198588533581.jpg/600x600bb.jpg'
+      image: 'https://c.saavncdn.com/719/Tauba-Tauba-From-Bad-Newz-Hindi-2024-20250730113701-500x500.jpg'
     },
     {
       id: 'new_chal_kudiye',
       title: 'Chal Kudiye (From "Jigra")',
       subtitle: 'Diljit Dosanjh, Alia Bhatt • Fresh Drop',
       query: 'Chal Kudiye Diljit',
-      image: 'https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/7d/3b/5b/7d3b5bb0-646d-c434-7426-db6a4458e78c/198846361918.jpg/600x600bb.jpg'
+      image: 'https://c.saavncdn.com/064/Chal-Kudiye-From-Jigra-Hindi-2024-20240918073952-500x500.jpg'
     },
     {
       id: 'new_illuminate',

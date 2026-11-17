@@ -578,6 +578,7 @@ class SonicEngine {
     this.isRepeat = false;
     this.shuffledIndices = [];
     this.previousVolume = 0.85;
+    this.fetchLyrics = this.loadCurrentLyrics.bind(this);
 
     // Active User
     this.currentUser = this.loadActiveSession();
@@ -1053,12 +1054,33 @@ class SonicEngine {
     // Mini-Player Bar Tap opens Spotify Mobile Full-Screen Player
     const playerBar = document.querySelector('.player-bar');
     if (playerBar) {
-      playerBar.addEventListener('click', (e) => {
-        if (e.target.closest('#playPauseBtn') || e.target.closest('#nextBtn') || e.target.closest('#prevBtn') || e.target.closest('#likeTrackBtn') || e.target.closest('#progressTrack') || e.target.closest('input')) {
+      const openFullPlayerSafe = (e) => {
+        if (e && e.target && (e.target.closest('#playPauseBtn') || e.target.closest('#nextBtn') || e.target.closest('#prevBtn') || e.target.closest('#likeTrackBtn') || e.target.closest('#progressTrack') || e.target.closest('input') || e.target.closest('.extra-controls') || e.target.closest('#deviceConnectBtn'))) {
           return;
         }
         if (this.currentPlaylist && this.currentPlaylist[this.currentIndex]) {
           this.openFullPlayer();
+        }
+      };
+
+      playerBar.addEventListener('click', openFullPlayerSafe);
+
+      let pTouchStartX = 0;
+      let pTouchStartY = 0;
+      playerBar.addEventListener('touchstart', (e) => {
+        if (e.touches && e.touches[0]) {
+          pTouchStartX = e.touches[0].clientX;
+          pTouchStartY = e.touches[0].clientY;
+        }
+      }, { passive: true });
+
+      playerBar.addEventListener('touchend', (e) => {
+        if (e.changedTouches && e.changedTouches[0]) {
+          const dx = Math.abs(e.changedTouches[0].clientX - pTouchStartX);
+          const dy = Math.abs(e.changedTouches[0].clientY - pTouchStartY);
+          if (dx < 12 && dy < 12) {
+            openFullPlayerSafe(e);
+          }
         }
       });
     }
@@ -1123,9 +1145,7 @@ class SonicEngine {
     const openLyricsFn = () => {
       this.closeFullPlayer();
       this.switchView('lyrics');
-      if (this.currentPlaylist && this.currentPlaylist[this.currentIndex]) {
-        this.fetchLyrics(this.currentPlaylist[this.currentIndex]);
-      }
+      this.loadCurrentLyrics();
     };
     if (sfpLyricsBtn) sfpLyricsBtn.addEventListener('click', openLyricsFn);
     if (sfpLyricsCard) sfpLyricsCard.addEventListener('click', openLyricsFn);
@@ -2537,8 +2557,8 @@ class SonicEngine {
 
     if (sfpArtwork) sfpArtwork.src = track.artwork || track.image || '';
     if (sfpTitle) sfpTitle.textContent = track.title || 'Select track';
-    if (sfpArtist) sfpArtist.textContent = track.artist || 'SONiC Engine';
-    if (sfpContextTitle) sfpContextTitle.textContent = track.album || 'SONiC Vault';
+    if (sfpArtist) sfpArtist.textContent = track.artist || '';
+    if (sfpContextTitle) sfpContextTitle.textContent = track.album || '';
 
     const liked = this.isLiked(track.id);
     if (sfpLikeBtn) {
@@ -2753,18 +2773,18 @@ class SonicEngine {
     const track = this.currentPlaylist[this.currentIndex];
 
     if (!track) {
-      if (this.dom.lyricsTrackTitle) this.dom.lyricsTrackTitle.textContent = 'No Track Playing';
-      if (this.dom.lyricsTrackArtist) this.dom.lyricsTrackArtist.textContent = 'SONiC Engine';
+      if (this.dom.lyricsTrackTitle) this.dom.lyricsTrackTitle.textContent = 'Lyrics';
+      if (this.dom.lyricsTrackArtist) this.dom.lyricsTrackArtist.textContent = '';
       this.dom.lyricsContainer.innerHTML = `
         <div class="lyrics-empty-msg">
-          <p>Select any song and start playback to sing along with real-time lyrics.</p>
+          <p>Play a song to view real-time synchronized lyrics.</p>
         </div>
       `;
       return;
     }
 
     if (this.dom.lyricsTrackTitle) this.dom.lyricsTrackTitle.textContent = track.title;
-    if (this.dom.lyricsTrackArtist) this.dom.lyricsTrackArtist.textContent = track.artist || 'SONiC Engine';
+    if (this.dom.lyricsTrackArtist) this.dom.lyricsTrackArtist.textContent = track.artist || '';
 
     this.dom.lyricsContainer.innerHTML = `
       <div class="lyrics-status">
@@ -2786,10 +2806,36 @@ class SonicEngine {
       }
 
       // 2. HTTP Server Endpoint
-      if (!data && window.location.protocol.startsWith('http')) {
+      if ((!data || !data.success) && window.location.protocol.startsWith('http')) {
         try {
           const res = await fetch(`/api/lyrics?track=${encodeURIComponent(cleanTitle)}&artist=${encodeURIComponent(cleanArtist)}`);
           if (res.ok) data = await res.json();
+        } catch(e) {}
+      }
+
+      // 3. Direct LRCLIB multi-strategy search fallback (ensures lyrics resolve for every track)
+      if (!data || !data.success || !Array.isArray(data.lines) || data.lines.length === 0) {
+        try {
+          const lrcQueries = [
+            `https://lrclib.net/api/search?q=${encodeURIComponent(`${cleanTitle} ${cleanArtist}`)}`,
+            `https://lrclib.net/api/search?track_name=${encodeURIComponent(cleanTitle)}`
+          ];
+          for (const qUrl of lrcQueries) {
+            const lRes = await fetch(qUrl);
+            if (lRes.ok) {
+              const lArr = await lRes.json();
+              if (Array.isArray(lArr) && lArr.length > 0) {
+                const best = lArr.find(x => x.syncedLyrics || x.plainLyrics) || lArr[0];
+                if (best && (best.syncedLyrics || best.plainLyrics)) {
+                  const parsedLines = this.parseLrcText(best.syncedLyrics, best.plainLyrics);
+                  if (parsedLines.length > 0) {
+                    data = { success: true, synced: !!best.syncedLyrics, lines: parsedLines };
+                    break;
+                  }
+                }
+              }
+            }
+          }
         } catch(e) {}
       }
 
@@ -2833,6 +2879,36 @@ class SonicEngine {
         </div>
       `;
     }
+  }
+
+  parseLrcText(lrcText, plainText) {
+    const arr = [];
+    if (lrcText && typeof lrcText === 'string') {
+      const lines = lrcText.split('\n');
+      const regex = /\[(\d{2}):(\d{2})\.(\d{2,3})\](.*)/;
+      for (const line of lines) {
+        const match = regex.exec(line.trim());
+        if (match) {
+          const mins = parseFloat(match[1]) || 0;
+          const secs = parseFloat(match[2]) || 0;
+          const msStr = (match[3] || '0').padEnd(3, '0').slice(0, 3);
+          const ms = parseFloat(msStr) || 0;
+          const time = mins * 60 + secs + ms / 1000;
+          const text = match[4].trim();
+          if (text) {
+            arr.push({ time, text });
+          }
+        }
+      }
+    }
+    if (arr.length === 0 && plainText && typeof plainText === 'string') {
+      const pLines = plainText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+      const interval = pLines.length > 0 ? 210 / pLines.length : 4;
+      pLines.forEach((txt, idx) => {
+        arr.push({ time: idx * interval, text: txt });
+      });
+    }
+    return arr;
   }
 
   syncLyricsTime(currentTime) {
