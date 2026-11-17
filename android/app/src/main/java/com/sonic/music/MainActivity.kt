@@ -120,7 +120,7 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     private fun setupWebView() {
         webView = WebView(this).apply {
-            setBackgroundColor(android.graphics.Color.parseColor("#050409"))
+            setBackgroundColor(android.graphics.Color.parseColor("#080f0b"))
             setLayerType(View.LAYER_TYPE_HARDWARE, null)
             isVerticalScrollBarEnabled = false
             isHorizontalScrollBarEnabled = false
@@ -139,6 +139,10 @@ class MainActivity : ComponentActivity() {
                 loadWithOverviewMode = false
                 cacheMode = WebSettings.LOAD_DEFAULT
                 mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                setRenderPriority(WebSettings.RenderPriority.HIGH)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    offscreenPreRaster = true
+                }
             }
 
             addJavascriptInterface(SonicNativeBridge(this@MainActivity), "SonicNative")
@@ -297,7 +301,7 @@ class MainActivity : ComponentActivity() {
         val playPauseIcon = if (isPlaying) android.R.drawable.ic_media_pause else android.R.drawable.ic_media_play
 
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(currentTitle)
             .setContentText(currentArtist)
             .setSubText("clover.")

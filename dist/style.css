@@ -2192,12 +2192,14 @@ body.android-app #subFilterBar {
   cursor: pointer;
   transition: transform 0.12s ease, background-color 0.12s ease;
   margin: 0 4px;
+  padding: 0;
 }
 
 .play-main-btn .play-svg {
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   fill: #000000;
+  display: block;
 }
 
 .play-main-btn:hover {

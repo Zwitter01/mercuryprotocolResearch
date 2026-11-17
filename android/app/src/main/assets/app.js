@@ -2547,17 +2547,19 @@ class SonicEngine {
   renderPlayPauseIcon(isPlaying) {
     if (isPlaying) {
       this.dom.playPauseBtn.innerHTML = `
-        <svg viewBox="0 0 16 16" class="play-svg" id="playIconSvg"><path fill="#000000" d="M2.7 1a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7H2.7zm8 0a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7h-2.6z"/></svg>
+        <svg viewBox="0 0 24 24" class="play-svg" id="playIconSvg"><path fill="#000000" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
       `;
       this.dom.playPauseBtn.title = 'Pause';
     } else {
       this.dom.playPauseBtn.innerHTML = `
-        <svg viewBox="0 0 16 16" class="play-svg" id="playIconSvg"><path fill="#000000" d="M3 1.713a.7.7 0 0 1 1.05-.607l10.89 6.288a.7.7 0 0 1 0 1.212L4.05 14.894A.7.7 0 0 1 3 14.288V1.713z"/></svg>
+        <svg viewBox="0 0 24 24" class="play-svg" id="playIconSvg"><path fill="#000000" d="M8 5.14v13.72L19 12 8 5.14z"/></svg>
       `;
       this.dom.playPauseBtn.title = 'Play';
     }
     if (this.dom.miniPlayBtn) {
-      this.dom.miniPlayBtn.textContent = isPlaying ? '⏸' : '▶';
+      this.dom.miniPlayBtn.innerHTML = isPlaying
+        ? `<svg viewBox="0 0 24 24" style="width:14px;height:14px;"><path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`
+        : `<svg viewBox="0 0 24 24" style="width:14px;height:14px;"><path fill="currentColor" d="M8 5.14v13.72L19 12 8 5.14z"/></svg>`;
     }
     this.renderFullPlayerPlayPause(isPlaying);
     if (window.SonicNative?.onPlaybackStateChanged) {
@@ -2629,10 +2631,11 @@ class SonicEngine {
   renderFullPlayerPlayPause(isPlaying) {
     const sfpPlayIconSvg = document.getElementById('sfpPlayIconSvg');
     if (!sfpPlayIconSvg) return;
+    sfpPlayIconSvg.setAttribute('viewBox', '0 0 24 24');
     if (isPlaying) {
       sfpPlayIconSvg.innerHTML = `<path fill="#000000" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>`;
     } else {
-      sfpPlayIconSvg.innerHTML = `<path fill="#000000" d="M8 5v14l11-7z"/>`;
+      sfpPlayIconSvg.innerHTML = `<path fill="#000000" d="M8 5.14v13.72L19 12 8 5.14z"/>`;
     }
   }
 
