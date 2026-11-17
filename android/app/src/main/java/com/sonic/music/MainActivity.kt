@@ -88,10 +88,24 @@ class MainActivity : ComponentActivity() {
                 val tab = intent.getStringExtra("tab") ?: "home"
                 switchTabDirectly(tab)
             }
+            "com.sonic.music.ACTION_SCROLL_BOTTOM" -> {
+                runOnUiThread {
+                    webView.evaluateJavascript("window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight); document.querySelector('.main-content')?.scrollTo?.({top: 999999});", null)
+                }
+            }
+            "com.sonic.music.ACTION_OPEN_DETAIL" -> {
+                runOnUiThread {
+                    webView.evaluateJavascript("window.sonic?.openEntityDetail?.({ title: 'Tauba Tauba (From \"Bad Newz\")', subtitle: 'Karan Aujla • Latest Chartbusters', type: 'Playlist', image: 'https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/4b/3b/68/4b3b6833-2895-46e2-2a5b-ee93bfbca658/198588523315.jpg/300x300bb.jpg' });", null)
+                }
+            }
             ACTION_EVAL -> {
                 val js = intent.getStringExtra("js") ?: ""
+                val b64 = intent.getStringExtra("b64") ?: ""
+                val code = if (b64.isNotBlank()) {
+                    String(android.util.Base64.decode(b64, android.util.Base64.DEFAULT))
+                } else js
                 runOnUiThread {
-                    webView.evaluateJavascript(js, null)
+                    webView.evaluateJavascript(code, null)
                 }
             }
         }

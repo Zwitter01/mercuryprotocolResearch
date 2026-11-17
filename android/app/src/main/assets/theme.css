@@ -1752,7 +1752,8 @@ html, body {
   .library-tab-view:not(.hidden) {
     display: block !important;
     width: 100% !important;
-    padding: 14px 16px 130px 16px !important;
+    padding: 38px 16px 76px 16px !important;
+    min-height: auto !important;
     animation: fadeInTab 0.15s ease-out !important;
   }
 
@@ -1907,18 +1908,19 @@ html, body {
     display: block !important;
     opacity: 1 !important;
     transform: none !important;
-    padding: 32px 16px 140px 16px !important;
-    margin-top: 36px !important;
+    padding: 24px 16px 80px 16px !important;
+    margin-top: 24px !important;
     border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
     background: transparent !important;
     box-sizing: border-box !important;
   }
 
   .footer-columns {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 24px !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 20px 16px !important;
     width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .footer-col {
@@ -1951,7 +1953,7 @@ html, body {
     display: flex !important;
     align-items: center !important;
     gap: 14px !important;
-    margin: 8px 0 16px 0 !important;
+    margin: 16px 0 8px 0 !important;
   }
 
   .social-circle-btn {
@@ -2168,13 +2170,13 @@ body.tab-library-active .main-content {
 
 body.tab-search-active .search-tab-view,
 body.tab-library-active .library-tab-view {
-  padding: 42px 16px 140px 16px !important;
+  padding: 38px 16px 76px 16px !important;
   margin: 0 !important;
   width: 100vw !important;
   max-width: 100vw !important;
   box-sizing: border-box !important;
   background: #121212 !important;
-  min-height: 100vh !important;
+  min-height: auto !important;
 }
 
 /* 4. PERMANENT MOBILE & ANDROID APP RULES */
@@ -2278,7 +2280,7 @@ body.android-app.tab-library-active .spotify-mobile-header {
   /* FULL-BLEED MOBILE LAYOUT (NO HORIZONTAL MARGINS) */
   body.android-app .app-body,
   .app-body {
-    padding: 0 0 120px 0 !important;
+    padding: 0 0 10px 0 !important;
     margin: 0 !important;
     width: 100vw !important;
     max-width: 100vw !important;
@@ -2299,7 +2301,7 @@ body.android-app.tab-library-active .spotify-mobile-header {
   }
 
   .browse-prompt {
-    padding: 0 16px 80px 16px !important;
+    padding: 0 16px 16px 16px !important;
     width: 100% !important;
     box-sizing: border-box !important;
   }
@@ -2391,9 +2393,252 @@ body.android-app.tab-library-active .spotify-mobile-header {
     opacity: 1 !important;
     transform: none !important;
     visibility: visible !important;
-    padding: 30px 16px 140px 16px !important;
-    margin-top: 40px !important;
+    padding: 24px 16px 80px 16px !important;
+    margin-top: 24px !important;
     border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
     background: transparent !important;
+  }
+
+  /* 1:1 SPOTIFY MOBILE DETAIL VIEW (ALBUM / ARTIST / PLAYLIST) */
+  .detail-view {
+    padding: 38px 16px 80px 16px !important;
+    box-sizing: border-box !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    background: #121212 !important;
+    min-height: auto !important;
+  }
+
+  .back-nav-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: none !important;
+    color: #ffffff !important;
+    padding: 6px 14px !important;
+    border-radius: 500px !important;
+    font-weight: 700 !important;
+    font-size: 0.8rem !important;
+    cursor: pointer !important;
+    margin-bottom: 16px !important;
+    font-family: inherit !important;
+  }
+
+  .detail-hero {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 14px !important;
+    margin-bottom: 16px !important;
+    padding: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  .detail-hero-art {
+    width: 110px !important;
+    height: 110px !important;
+    min-width: 110px !important;
+    min-height: 110px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+    flex-shrink: 0 !important;
+    object-fit: cover !important;
+  }
+
+  .detail-hero-art.artist-round {
+    border-radius: 50% !important;
+  }
+
+  .detail-hero-meta {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    min-width: 0 !important;
+    flex: 1 1 0% !important;
+    overflow: hidden !important;
+  }
+
+  .detail-type-badge {
+    font-size: 0.68rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.08em !important;
+    color: #ff7597 !important;
+    text-transform: uppercase !important;
+  }
+
+  .detail-main-title {
+    font-size: 1.25rem !important;
+    font-weight: 800 !important;
+    line-height: 1.25 !important;
+    letter-spacing: -0.02em !important;
+    color: #ffffff !important;
+    margin: 0 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    word-break: break-word !important;
+  }
+
+  .detail-sub-line {
+    font-size: 0.8rem !important;
+    color: #b3b3b3 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .detail-actions-bar {
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .detail-play-btn {
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    border-radius: 50% !important;
+    background: #1ed760 !important;
+    border: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+  }
+
+  .play-svg-lg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  .detail-action-btn {
+    background: none !important;
+    border: none !important;
+    color: #b3b3b3 !important;
+    cursor: pointer !important;
+    padding: 8px !important;
+  }
+
+  .table-header-row {
+    display: none !important;
+  }
+
+  .detail-tracks-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+    width: 100% !important;
+    padding-bottom: 80px !important;
+  }
+
+  .track-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 8px 4px !important;
+    border-radius: 8px !important;
+    gap: 10px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    background: transparent !important;
+  }
+
+  .track-row:active {
+    background: rgba(255, 255, 255, 0.08) !important;
+  }
+
+  .track-row.playing .tr-title {
+    color: #1ed760 !important;
+  }
+
+  .tr-num {
+    width: 20px !important;
+    font-size: 0.8rem !important;
+    color: #777777 !important;
+    flex-shrink: 0 !important;
+    text-align: center !important;
+  }
+
+  .tr-main {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  .tr-thumb {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    border-radius: 4px !important;
+    object-fit: cover !important;
+    flex-shrink: 0 !important;
+  }
+
+  .tr-title-wrap {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+  }
+
+  .tr-title {
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .tr-artist {
+    font-size: 0.78rem !important;
+    color: #b3b3b3 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .tr-album,
+  .col-album,
+  .col-duration,
+  .tr-duration {
+    display: none !important;
+  }
+
+  .tr-like-btn {
+    background: none !important;
+    border: none !important;
+    color: #888888 !important;
+    padding: 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+
+  .tr-like-btn.liked {
+    color: #1ed760 !important;
+  }
+
+  /* Shelf Show All Mobile Grid */
+  .show-all-view {
+    padding: 38px 16px 80px 16px !important;
+    box-sizing: border-box !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+
+  .cards-grid-show-all {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
   }
 }
