@@ -55,6 +55,11 @@ body {
   z-index: 100;
 }
 
+body.android-app .top-nav-bar,
+body.android-app #subFilterBar {
+  display: none !important;
+}
+
 /* Left: Logo & Circular Home Button */
 .nav-left {
   display: flex;
