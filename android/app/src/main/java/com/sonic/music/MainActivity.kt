@@ -44,6 +44,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Hardware acceleration for lag-free 60fps rendering on mobile
+        window.setFlags(
+            android.view.WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+            android.view.WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
+        )
+
         // Aurora Noir status bar and navigation bar blending with edge-to-edge touch support
         window.statusBarColor = android.graphics.Color.parseColor("#050409")
         window.navigationBarColor = android.graphics.Color.parseColor("#050409")

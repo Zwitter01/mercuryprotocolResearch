@@ -2641,4 +2641,155 @@ body.android-app.tab-library-active .spotify-mobile-header {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 12px !important;
   }
+
+  /* 1:1 SPOTIFY MOBILE SEARCH RESULTS */
+  .tab-search-results {
+    display: block !important;
+    width: 100% !important;
+    padding-bottom: 80px !important;
+  }
+
+  .tab-search-results.hidden {
+    display: none !important;
+  }
+
+  .search-result-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 8px 4px !important;
+    border-radius: 8px !important;
+    gap: 12px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    background: transparent !important;
+    cursor: pointer !important;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  .search-result-row:active {
+    background: rgba(255, 255, 255, 0.08) !important;
+  }
+
+  .search-result-row.playing .sr-title {
+    color: #1ed760 !important;
+  }
+
+  .sr-thumb {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    border-radius: 4px !important;
+    object-fit: cover !important;
+    flex-shrink: 0 !important;
+  }
+
+  .sr-info {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+  }
+
+  .sr-title {
+    font-size: 0.92rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .sr-artist {
+    font-size: 0.78rem !important;
+    color: #b3b3b3 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .sr-like-btn {
+    background: none !important;
+    border: none !important;
+    color: #888888 !important;
+    padding: 8px !important;
+    cursor: pointer !important;
+    flex-shrink: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .sr-like-btn.liked {
+    color: #1ed760 !important;
+  }
 }
+
+/* ==========================================================================
+   PERFORMANCE & 60FPS SMOOTHNESS RULES FOR ANDROID WEBVIEW & MOBILE
+   ========================================================================== */
+body.android-app .sonic-app::before,
+@media (max-width: 900px) {
+  .sonic-app::before {
+    display: none !important;
+  }
+}
+
+body.android-app .aurora-blob,
+@media (max-width: 900px) {
+  .aurora-blob {
+    animation: none !important;
+  }
+}
+
+body.android-app .js-reveal .shelf-block,
+body.android-app .js-reveal .spotify-catalog-footer,
+body.android-app .js-reveal .detail-hero,
+body.android-app .js-reveal .liked-header-card,
+body.android-app .js-reveal .offline-header-card,
+@media (max-width: 900px) {
+  .js-reveal .shelf-block,
+  .js-reveal .spotify-catalog-footer,
+  .js-reveal .detail-hero,
+  .js-reveal .liked-header-card,
+  .js-reveal .offline-header-card {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+body.android-app .spotify-mobile-header,
+body.android-app .spotify-mobile-bottom-nav,
+body.android-app .player-bar,
+body.android-app .modal-overlay,
+body.android-app .modal-box,
+@media (max-width: 900px) {
+  .spotify-mobile-header,
+  .spotify-mobile-bottom-nav,
+  .player-bar,
+  .modal-overlay,
+  .modal-box {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+body.android-app,
+@media (max-width: 900px) {
+  * {
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation;
+  }
+  .main-content, .search-tab-view, .library-tab-view, .shelf-grid, .detail-view, .show-all-view {
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-y: contain !important;
+  }
+  .spotify-card, .artist-card, .quick-tile, .genre-card, .track-row, .search-result-row {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+}
+

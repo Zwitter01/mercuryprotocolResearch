@@ -1802,13 +1802,54 @@ class SonicEngine {
   }
 
   // ==========================================================================
-  // HIGH-SPEED LIVE SEARCH WITH IN-MEMORY LRU CACHE
+  // HIGH-SPEED LIVE SEARCH WITH IN-MEMORY LRU CACHE & MOBILE SYNC
   // ==========================================================================
+  performSearch(query) {
+    if (!query) return;
+    const isMobile = window.innerWidth <= 900 || document.body.classList.contains('android-app');
+    if (isMobile && window.switchMobileTab) {
+      window.switchMobileTab('search');
+    }
+    const tabSearchInput = document.getElementById('tabSearchInput');
+    const tabClearBtn = document.getElementById('tabSearchClearBtn');
+    if (tabSearchInput && tabSearchInput.value !== query) {
+      tabSearchInput.value = query;
+      tabClearBtn?.classList.remove('hidden');
+    }
+    return this.executeSearch(query);
+  }
+
   async executeSearch(query) {
+    if (!query || !query.trim()) return;
+    query = query.trim();
     const cacheKey = query.toLowerCase();
+
+    const isMobile = window.innerWidth <= 900 || document.body.classList.contains('android-app');
+    const tabSearchResults = document.getElementById('tabSearchResultsContainer');
+    const tabSongsList = document.getElementById('tabSongsList');
+    const searchCategories = document.getElementById('searchTabCategories');
+    const tabSearchInput = document.getElementById('tabSearchInput');
+    const tabClearBtn = document.getElementById('tabSearchClearBtn');
+
+    if (isMobile) {
+      if (tabSearchInput && tabSearchInput.value !== query) {
+        tabSearchInput.value = query;
+        tabClearBtn?.classList.remove('hidden');
+      }
+      searchCategories?.classList.add('hidden');
+      tabSearchResults?.classList.remove('hidden');
+      if (tabSongsList && !this.queryCache.has(cacheKey)) {
+        tabSongsList.innerHTML = `
+          <div style="padding: 30px 16px; text-align: center; color: #b3b3b3; font-size: 0.95rem;">
+            Searching songs for "${this.escapeHtml(query)}"...
+          </div>
+        `;
+      }
+    }
+
     if (this.queryCache.has(cacheKey)) {
       this.renderSearchResults(this.queryCache.get(cacheKey));
-      this.switchView('search');
+      if (!isMobile) this.switchView('search');
       return;
     }
 
@@ -1817,31 +1858,46 @@ class SonicEngine {
     }
     this.abortController = new AbortController();
 
-    this.dom.loadingSpinner.classList.remove('hidden');
-    this.dom.browsePrompt.classList.add('hidden');
-    this.dom.detailView.classList.add('hidden');
-    this.dom.likedSongsView.classList.add('hidden');
-    this.dom.activeResults.classList.add('hidden');
+    if (!isMobile) {
+      this.dom.loadingSpinner.classList.remove('hidden');
+      this.dom.browsePrompt.classList.add('hidden');
+      this.dom.detailView.classList.add('hidden');
+      this.dom.likedSongsView.classList.add('hidden');
+      this.dom.activeResults.classList.add('hidden');
+    }
+
+    // Instant offline/cached results for zero lag
+    const localMatches = (typeof SONIC_CATALOG !== 'undefined') ? (SONIC_CATALOG.offlineTracks || []).concat(
+      SONIC_CATALOG.newMusic || [],
+      SONIC_CATALOG.romanticHits || [],
+      SONIC_CATALOG.partyBangers || []
+    ).filter(t => 
+      (t.title && t.title.toLowerCase().includes(query.toLowerCase())) ||
+      (t.artist && t.artist.toLowerCase().includes(query.toLowerCase()))
+    ) : [];
+    if (localMatches.length > 0) {
+      this.renderSearchResults({ tracks: localMatches, artists: [], albums: [] });
+    }
 
     try {
       let normalized = null;
 
-      // 1. Try local server multi-catalog endpoint
-      try {
-        const localSearchUrl = `/api/search?q=${encodeURIComponent(query)}`;
-        const localRes = await fetch(localSearchUrl, { signal: this.abortController.signal });
-        if (localRes.ok) {
-          const lData = await localRes.json();
-          if (lData.success && (lData.tracks?.length > 0 || lData.artists?.length > 0)) {
-            normalized = {
-              tracks: lData.tracks || [],
-              artists: (lData.artists || []).slice(0, 8),
-              albums: (lData.albums || []).slice(0, 8)
-            };
+      // 1. Try local server multi-catalog endpoint (only if hosted over http/https)
+      if (window.location.protocol.startsWith('http')) {
+        try {
+          const localSearchUrl = `/api/search?q=${encodeURIComponent(query)}`;
+          const localRes = await fetch(localSearchUrl, { signal: this.abortController.signal });
+          if (localRes.ok) {
+            const lData = await localRes.json();
+            if (lData.success && (lData.tracks?.length > 0 || lData.artists?.length > 0)) {
+              normalized = {
+                tracks: lData.tracks || [],
+                artists: (lData.artists || []).slice(0, 8),
+                albums: (lData.albums || []).slice(0, 8)
+              };
+            }
           }
-        }
-      } catch (e) {
-        // Fallback to client-side search
+        } catch (e) {}
       }
 
       // 2. Direct iTunes Global Search across storefronts
@@ -1850,13 +1906,15 @@ class SonicEngine {
           const isCjk = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/.test(query);
           const cList = isCjk ? ['in', 'jp', 'us'] : ['in', 'us'];
           for (const country of cList) {
-            const url = `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&country=${country}&media=music&entity=song,musicArtist,album&limit=30`;
+            const url = `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&country=${country}&media=music&entity=song&limit=35`;
             const response = await fetch(url, { signal: this.abortController.signal });
-            const data = await response.json();
-            const resNorm = this.normalizeCatalogData(data.results);
-            if (resNorm.tracks.length > 0) {
-              normalized = resNorm;
-              break;
+            if (response.ok) {
+              const data = await response.json();
+              const resNorm = this.normalizeCatalogData(data.results);
+              if (resNorm.tracks.length > 0) {
+                normalized = resNorm;
+                break;
+              }
             }
           }
         } catch (e) {}
@@ -1865,30 +1923,37 @@ class SonicEngine {
       // 3. Fallback: JioSaavn Client-Side Search
       if (!normalized || normalized.tracks.length === 0) {
         try {
-          const saavnUrl = `https://www.jiosaavn.com/api.php?__call=search.getResults&_format=json&n=15&p=1&q=${encodeURIComponent(query)}`;
+          const saavnUrl = `https://www.jiosaavn.com/api.php?__call=search.getResults&_format=json&n=20&p=1&q=${encodeURIComponent(query)}`;
           const sRes = await fetch(saavnUrl, { signal: this.abortController.signal });
-          const sData = await sRes.json();
-          if (sData.results && sData.results.length > 0) {
-            const tracks = [];
-            sData.results.forEach(s => {
-              tracks.push({
-                id: `saavn_${s.id}`,
-                title: s.song,
-                artist: s.primary_artists || s.singers || 'Artist',
-                album: s.album || 'Single',
-                artwork: (s.image || '').replace('150x150', '500x500'),
-                previewUrl: '',
-                durationMs: (parseInt(s.duration, 10) || 215) * 1000,
-                releaseDate: s.year || ''
+          if (sRes.ok) {
+            const sData = await sRes.json();
+            if (sData.results && sData.results.length > 0) {
+              const tracks = [];
+              sData.results.forEach(s => {
+                tracks.push({
+                  id: `saavn_${s.id}`,
+                  title: s.song,
+                  artist: s.primary_artists || s.singers || 'Artist',
+                  album: s.album || 'Single',
+                  artwork: (s.image || '').replace('150x150', '500x500'),
+                  previewUrl: '',
+                  durationMs: (parseInt(s.duration, 10) || 215) * 1000,
+                  releaseDate: s.year || ''
+                });
               });
-            });
-            normalized = { tracks, artists: [], albums: [] };
+              normalized = { tracks, artists: [], albums: [] };
+            }
           }
         } catch (e) {}
       }
 
-      if (!normalized) {
-        normalized = { tracks: [], artists: [], albums: [] };
+      // 4. Final fallback to local matches
+      if (!normalized || normalized.tracks.length === 0) {
+        if (localMatches.length > 0) {
+          normalized = { tracks: localMatches, artists: [], albums: [] };
+        } else {
+          normalized = { tracks: [], artists: [], albums: [] };
+        }
       }
 
       if (this.queryCache.size >= this.maxCacheSize) {
@@ -1898,11 +1963,11 @@ class SonicEngine {
       this.queryCache.set(cacheKey, normalized);
 
       this.renderSearchResults(normalized);
-      this.switchView('search');
+      if (!isMobile) this.switchView('search');
     } catch (err) {
       if (err.name === 'AbortError') return;
       this.dom.loadingSpinner.classList.add('hidden');
-      this.switchView('browse');
+      if (!isMobile) this.switchView('browse');
     }
   }
 
@@ -1963,6 +2028,48 @@ class SonicEngine {
     this.currentPlaylist = tracks;
     this.rebuildShuffleList();
 
+    // 1. Mobile Search Tab Results Population
+    const tabSongsList = document.getElementById('tabSongsList');
+    const tabSearchResults = document.getElementById('tabSearchResultsContainer');
+    const searchCategories = document.getElementById('searchTabCategories');
+    if (tabSongsList && tabSearchResults) {
+      searchCategories?.classList.add('hidden');
+      tabSearchResults.classList.remove('hidden');
+
+      if (tracks.length === 0) {
+        tabSongsList.innerHTML = `<div style="padding:40px 16px;text-align:center;color:#b3b3b3;font-size:0.95rem;">No matching songs found. Try searching another artist or song!</div>`;
+      } else {
+        tabSongsList.innerHTML = tracks.map((track, idx) => `
+          <div class="search-result-row ${this.currentIndex === idx ? 'playing' : ''}" data-index="${idx}">
+            <img src="${track.artwork}" class="sr-thumb" alt="${this.escapeHtml(track.title)}" onerror="window.handleImgError(this)">
+            <div class="sr-info">
+              <div class="sr-title">${this.escapeHtml(track.title)}</div>
+              <div class="sr-artist">${this.escapeHtml(track.artist)}</div>
+            </div>
+            <button class="sr-like-btn ${this.isLiked(track.id) ? 'liked' : ''}" data-id="${track.id}" title="Save to Library">
+              ${this.getHeartSvgHtml(this.isLiked(track.id))}
+            </button>
+          </div>
+        `).join('');
+
+        tabSongsList.querySelectorAll('.search-result-row').forEach(row => {
+          row.addEventListener('click', (e) => {
+            if (e.target.closest('.sr-like-btn')) {
+              e.stopPropagation();
+              const trackId = e.target.closest('.sr-like-btn').dataset.id;
+              this.toggleLikeById(trackId);
+              return;
+            }
+            const idx = parseInt(row.dataset.index, 10);
+            this.currentPlaylist = tracks;
+            this.rebuildShuffleList();
+            this.playTrack(idx);
+          });
+        });
+      }
+    }
+
+    // 2. Desktop Search Results Population
     if (tracks.length === 0) {
       this.dom.topResultCard.innerHTML = `<div style="padding:20px;color:var(--text-subdued);">No matching songs found.</div>`;
       this.dom.songsList.innerHTML = '';
@@ -3251,7 +3358,7 @@ class SonicEngine {
     }
 
     document.querySelectorAll(`[data-id="${track.id}"]`).forEach(btn => {
-      if (btn.classList.contains('row-heart-btn') || btn.classList.contains('tr-like-btn')) {
+      if (btn.classList.contains('row-heart-btn') || btn.classList.contains('tr-like-btn') || btn.classList.contains('sr-like-btn')) {
         btn.classList.toggle('liked', !exists);
         btn.innerHTML = this.getHeartSvgHtml(!exists);
       }
@@ -3698,19 +3805,16 @@ document.addEventListener('DOMContentLoaded', () => {
           if (!q) {
             searchCategories?.classList.remove('hidden');
             tabSearchResults?.classList.add('hidden');
+            const tabSongsList = document.getElementById('tabSongsList');
+            if (tabSongsList) tabSongsList.innerHTML = '';
           } else {
             debounceTimer = setTimeout(() => {
               searchCategories?.classList.add('hidden');
               tabSearchResults?.classList.remove('hidden');
               if (window.sonic?.performSearch) {
                 window.sonic.performSearch(q);
-                // Also clone results to tab results if desired
-                const activeResults = document.getElementById('activeResults');
-                if (activeResults) {
-                  activeResults.classList.remove('hidden');
-                }
               }
-            }, 300);
+            }, 150);
           }
         });
       }
@@ -3721,6 +3825,8 @@ document.addEventListener('DOMContentLoaded', () => {
           tabClearBtn.classList.add('hidden');
           searchCategories?.classList.remove('hidden');
           tabSearchResults?.classList.add('hidden');
+          const tabSongsList = document.getElementById('tabSongsList');
+          if (tabSongsList) tabSongsList.innerHTML = '';
         });
       }
 
