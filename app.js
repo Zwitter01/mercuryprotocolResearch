@@ -12,14 +12,14 @@
 
 // Universal Resilient Artwork Fallback Generator (Ensures NO broken images EVER appear)
 window.getSonicFallbackArtwork = function(title) {
-  const cleanTitle = (title || 'SONiC Track').replace(/["'<>]/g, '').trim();
+  const cleanTitle = (title || 'clover. Track').replace(/["'<>]/g, '').trim();
   const colors = [
-    ['#0d9488', '#042f2e'], // emerald
-    ['#2563eb', '#172554'], // blue
-    ['#db2777', '#500724'], // pink / magenta
+    ['#244b35', '#080f0b'], // pine green
+    ['#183927', '#0e1812'], // forest dark
     ['#7c3aed', '#2e1065'], // purple
-    ['#ea580c', '#431407'], // warm amber
-    ['#16a34a', '#052e16'], // spotify dark green
+    ['#16a34a', '#052e16'], // emerald green
+    ['#2563eb', '#172554'], // blue
+    ['#2d5e42', '#14241b'], // sage forest
   ];
   let hash = 0;
   for (let i = 0; i < cleanTitle.length; i++) {
@@ -27,7 +27,7 @@ window.getSonicFallbackArtwork = function(title) {
     hash |= 0;
   }
   const [c1, c2] = colors[Math.abs(hash) % colors.length];
-  const char = cleanTitle.charAt(0).toUpperCase() || 'S';
+  const char = cleanTitle.charAt(0).toUpperCase() || 'C';
   const displayTitle = cleanTitle.length > 22 ? cleanTitle.substring(0, 20) + '...' : cleanTitle;
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
@@ -41,7 +41,7 @@ window.getSonicFallbackArtwork = function(title) {
     <circle cx="150" cy="120" r="54" fill="rgba(255,255,255,0.14)" />
     <text x="150" y="138" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="52" font-weight="900" fill="#ffffff" text-anchor="middle">${char}</text>
     <text x="150" y="224" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">${displayTitle}</text>
-    <text x="150" y="248" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#1DB954" text-anchor="middle" letter-spacing="1">SONiC MUSIC</text>
+    <text x="150" y="248" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#4ade80" text-anchor="middle" letter-spacing="1.5">CLOVER</text>
   </svg>`;
   return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
 };
@@ -832,17 +832,17 @@ class SonicEngine {
     // 3. Quick Links
     if (this.dom.supportLink) {
       this.dom.supportLink.addEventListener('click', () => {
-        this.showToast('Opening Support: support@sonicmusic.app');
+        this.showToast('Opening Support: support@clovermusic.app');
       });
     }
     if (this.dom.downloadLink) {
       this.dom.downloadLink.addEventListener('click', () => {
-        alert('SONiC Desktop App: Downloadable for Windows 11/10 with offline playback and lossless streaming.');
+        alert('clover. Desktop App: Downloadable for Windows 11/10 with offline playback and lossless streaming.');
       });
     }
     if (this.dom.installAppBtn) {
       this.dom.installAppBtn.addEventListener('click', () => {
-        alert('Install SONiC: Fast, offline-ready desktop PWA player.');
+        alert('Install clover.: Fast, offline-ready desktop PWA player.');
       });
     }
 
@@ -883,7 +883,7 @@ class SonicEngine {
     }
 
     window.addEventListener('offline', () => {
-      console.log('Device is offline: SONiC Pre-installed Vault active');
+      console.log('Device is offline: clover. Pre-installed Vault active');
     });
     window.addEventListener('online', () => {
       console.log('Device is online: 320kbps Live Streaming active');
@@ -3215,7 +3215,7 @@ class SonicEngine {
               <svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 6h16v10H4zM2 4v14h7v2H7v2h10v-2h-2v-2h7V4H2zm18 12H4V6h16v10z"/></svg>
             </div>
             <div class="connect-empty-text">
-              No other SONiC devices active on Wi-Fi right now.<br>
+              No other clover. devices active on Wi-Fi right now.<br>
               Open <strong>${data.localUrl || 'the link below'}</strong> on your phone to connect!
             </div>
           </div>
@@ -3236,7 +3236,7 @@ class SonicEngine {
               `}
             </div>
             <div class="device-item-meta">
-              <div class="device-item-name">${this.escapeHtml(dev.name || 'SONiC Device')}</div>
+              <div class="device-item-name">${this.escapeHtml(dev.name || 'clover. Device')}</div>
               <div class="device-item-desc">${this.escapeHtml(playingInfo)}</div>
             </div>
             <button class="connect-transfer-btn" data-transfer-to="${this.escapeHtml(dev.id)}" type="button">Transfer</button>
@@ -3552,7 +3552,7 @@ class SonicEngine {
       if (this.dom.tabSignup) this.dom.tabSignup.classList.add('active');
       if (this.dom.tabLogin) this.dom.tabLogin.classList.remove('active');
     } else {
-      if (this.dom.authModalTitle) this.dom.authModalTitle.textContent = 'Log in to SONiC';
+      if (this.dom.authModalTitle) this.dom.authModalTitle.textContent = 'Log in to clover.';
       if (this.dom.authModalSub) this.dom.authModalSub.textContent = 'To continue, log in with Google or your Gmail account';
       if (this.dom.googleBtnLabel) this.dom.googleBtnLabel.textContent = 'Continue with Google';
       if (this.dom.authEmailLabel) this.dom.authEmailLabel.textContent = 'Gmail or Email address';
@@ -3606,7 +3606,7 @@ class SonicEngine {
       this.saveAllUsers(users);
       this.saveActiveSession(newUser);
       this.closeAuthModal();
-      this.showToast(`Welcome to SONiC, ${displayName}!`);
+      this.showToast(`Welcome to clover., ${displayName}!`);
     } else {
       let user = users.find(u => 
         ((u.username && u.username.toLowerCase() === username.toLowerCase()) || (u.email && u.email.toLowerCase() === email.toLowerCase())) &&
@@ -3659,7 +3659,7 @@ class SonicEngine {
 
   handleLogOut() {
     this.saveActiveSession(null);
-    this.showToast('Logged out of SONiC');
+    this.showToast('Logged out of clover.');
   }
 
   openProfileModal() {
@@ -3681,7 +3681,7 @@ class SonicEngine {
       if (nameEl) nameEl.textContent = name;
       if (emailEl) emailEl.textContent = maskedEmail;
       if (badgeEl) {
-        badgeEl.textContent = this.currentUser.provider === 'google' ? 'Google Account' : 'SONiC Account';
+        badgeEl.textContent = this.currentUser.provider === 'google' ? 'Google Account' : 'clover. Account';
       }
     }
     modal.classList.remove('hidden');
@@ -3972,7 +3972,7 @@ class SonicEngine {
             <span class="tr-artist">${this.escapeHtml(track.artist)}</span>
           </div>
         </div>
-        <span class="tr-album">${this.escapeHtml(track.album || track.genreLabel || 'SONiC Vault')}</span>
+        <span class="tr-album">${this.escapeHtml(track.album || track.genreLabel || 'clover. Vault')}</span>
         <div class="tr-like">
           <button class="tr-like-btn ${this.isLiked(track.id) ? 'liked' : ''}" data-id="${track.id}" title="Like">
             <svg viewBox="0 0 24 24" class="svg-icon-xs"><path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
@@ -4062,6 +4062,8 @@ class SonicEngine {
 // Boot Engine
 window.addEventListener('DOMContentLoaded', () => {
   window.sonic = new SonicEngine();
+  window.melody = window.sonic;
+  window.clover = window.sonic;
 });
 
 
@@ -4080,6 +4082,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     
+    // Mobile Brand Home Button
+    const mobBrandBtn = document.getElementById('mobBrandHomeBtn');
+    if (mobBrandBtn) {
+      mobBrandBtn.addEventListener('click', () => {
+        window.switchMobileTab?.('home');
+        document.querySelector('.main-content')?.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
     // Mobile Top Bar Filter Pills
     const mobPills = document.querySelectorAll('.mob-pill');
     mobPills.forEach(p => {
@@ -4097,6 +4108,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (f === 'trending') {
           const trendingBlock = document.getElementById('shelfBiggestHitsBlock');
           if (trendingBlock) trendingBlock.scrollIntoView({ behavior: 'smooth' });
+        } else if (f === 'new') {
+          const newBlock = document.getElementById('shelfNewMusicBlock');
+          if (newBlock) newBlock.scrollIntoView({ behavior: 'smooth' });
         }
       });
     });

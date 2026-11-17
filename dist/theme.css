@@ -4,29 +4,29 @@
    ambient light that follows the artwork. Loaded after style.css.
    ========================================================================== */
 :root {
-  --amb: 255, 77, 141;                       /* set live from artwork by ux.js */
-  --ink-0: #050409;
-  --ink-1: #0b0a12;
-  --ink-2: #13111c;
-  --ink-3: #1c1928;
-  --glass: rgba(18, 16, 28, .62);
-  --glass-strong: rgba(14, 12, 22, .82);
+  --amb: 36, 75, 53;                       /* Pine forest green #244b35 */
+  --ink-0: #080f0b;
+  --ink-1: #0e1812;
+  --ink-2: #14241b;
+  --ink-3: #1b2f23;
+  --glass: rgba(18, 36, 26, .62);
+  --glass-strong: rgba(14, 26, 18, .88);
   --line: rgba(255, 255, 255, .08);
-  --line-strong: rgba(255, 255, 255, .16);
-  --c1: #ff7a45;
-  --c2: #ff3d8b;
-  --c3: #7c5cff;
-  --grad: linear-gradient(120deg, var(--c1) 0%, var(--c2) 48%, var(--c3) 100%);
-  --text-base: #f6f3fb;
-  --text-subdued: #9a95ad;
+  --line-strong: rgba(74, 222, 128, .2);
+  --c1: #183927;
+  --c2: #244b35;
+  --c3: #4ade80;
+  --grad: linear-gradient(120deg, var(--c1) 0%, var(--c2) 50%, var(--c3) 100%);
+  --text-base: #f6fbf7;
+  --text-subdued: #8da495;
   --bg-app: var(--ink-0);
   --bg-base: var(--ink-1);
   --bg-highlight: var(--ink-2);
   --bg-elevated: var(--ink-3);
-  --bg-hover: #242033;
-  --spotify-green: var(--c2);
-  --spotify-green-hover: #ff6aa6;
-  --sonic-cyan: #ff7aa9;
+  --bg-hover: #1f3729;
+  --spotify-green: #22c55e;
+  --spotify-green-hover: #4ade80;
+  --sonic-cyan: #4ade80;
   --border-subtle: var(--line);
   --ease: cubic-bezier(.22, 1, .36, 1);
   --spring: cubic-bezier(.34, 1.56, .64, 1);
@@ -81,13 +81,18 @@ body::after {
   box-shadow: 0 12px 40px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .06);
 }
 .brand-text {
-  font-family: var(--font-display); font-weight: 800; letter-spacing: .22em; font-size: 1.05rem;
-  background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
-  background-size: 200% 100%; animation: shimmer 6s linear infinite;
+  font-family: var(--font-display); font-weight: 800; letter-spacing: -0.02em; font-size: 1.15rem;
+  color: #ffffff;
+  display: inline-flex; align-items: baseline;
 }
-@keyframes shimmer { to { background-position: -200% 0; } }
-.sonic-icon { filter: drop-shadow(0 0 14px rgba(var(--amb), .7)); transition: transform .4s var(--spring), filter .4s ease; }
-.logo:hover .sonic-icon { transform: scale(1.12); filter: drop-shadow(0 0 22px rgba(255, 61, 139, 0.85)); }
+.brand-text .clover-dot, .mob-brand-name .clover-dot {
+  color: #4ade80 !important;
+  font-size: 1.45rem !important;
+  line-height: 0 !important;
+  margin-left: 1px !important;
+}
+.sonic-icon { filter: drop-shadow(0 0 14px rgba(74, 222, 128, .45)); transition: transform .4s var(--spring), filter .4s ease; }
+.logo:hover .sonic-icon { transform: scale(1.12); filter: drop-shadow(0 0 22px rgba(74, 222, 128, .75)); }
 .offline-ready-badge { display: none !important; }
 .home-circle-btn, .icon-round-btn, .social-circle-btn {
   background: rgba(255, 255, 255, .05); border: 1px solid var(--line); color: var(--text-base);
@@ -114,12 +119,13 @@ body::after {
 .install-app-btn:hover { background: rgba(255, 255, 255, .12); border-color: var(--line-strong); transform: translateY(-1px); }
 .login-pill-btn, .auth-submit-btn, .promo-btn {
   position: relative; overflow: hidden; border: 0; border-radius: 14px; color: #fff; font-weight: 800;
-  background: var(--grad); background-size: 160% 100%;
-  box-shadow: 0 10px 28px rgba(255, 61, 139, .35);
+  background: linear-gradient(135deg, #183927 0%, #244b35 50%, #2d5e42 100%);
+  border: 1px solid rgba(74, 222, 128, .35);
+  box-shadow: 0 10px 28px rgba(36, 75, 53, .45);
   transition: transform .35s var(--spring), box-shadow .3s, background-position .6s var(--ease);
 }
 .login-pill-btn:hover, .auth-submit-btn:hover, .promo-btn:hover {
-  transform: translateY(-2px) scale(1.04); background-position: 100% 0; box-shadow: 0 14px 36px rgba(255, 61, 139, .55);
+  transform: translateY(-2px) scale(1.04); box-shadow: 0 14px 36px rgba(74, 222, 128, .35);
 }
 .logout-btn { border-radius: 12px; }
 .user-avatar { background: var(--grad); color: #fff; }
@@ -2187,15 +2193,18 @@ body.android-app #subFilterBar {
 
 body.android-app .spotify-mobile-header {
   display: flex !important;
-  align-items: center !important;
+  flex-direction: column !important;
   gap: 12px !important;
-  padding: 36px 16px 10px 16px !important;
-  background: #121212 !important;
+  padding: 38px 16px 12px 16px !important;
+  background: linear-gradient(180deg, rgba(14, 26, 18, 0.98) 0%, rgba(8, 15, 11, 0.96) 100%) !important;
+  border-bottom: 1px solid rgba(74, 222, 128, 0.12) !important;
   width: 100% !important;
   box-sizing: border-box !important;
   position: sticky !important;
   top: 0 !important;
   z-index: 100 !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
 }
 
 body.android-app.tab-search-active .spotify-mobile-header,
@@ -2203,11 +2212,58 @@ body.android-app.tab-library-active .spotify-mobile-header {
   display: none !important;
 }
 
+.mob-header-top-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+}
+
+.mob-brand-wrap {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  cursor: pointer !important;
+  user-select: none !important;
+}
+
+.mob-brand-icon {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 9px !important;
+  filter: drop-shadow(0 2px 10px rgba(74, 222, 128, 0.35)) !important;
+  flex-shrink: 0 !important;
+}
+
+.mob-brand-name {
+  font-family: var(--font-display), 'Sora', sans-serif !important;
+  font-size: 1.45rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.03em !important;
+  color: #ffffff !important;
+  display: inline-flex !important;
+  align-items: baseline !important;
+}
+
+.mob-brand-name .clover-dot {
+  color: #4ade80 !important;
+  font-size: 1.6rem !important;
+  line-height: 0 !important;
+  margin-left: 1px !important;
+}
+
+.mob-header-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
 .spotify-mob-user-avatar {
   width: 34px !important;
   height: 34px !important;
   border-radius: 50% !important;
-  background: #ff5e3a !important;
+  background: linear-gradient(135deg, #183927 0%, #244b35 100%) !important;
+  box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.35), 0 3px 10px rgba(36, 75, 53, 0.5) !important;
   color: #ffffff !important;
   font-weight: 800 !important;
   font-size: 0.92rem !important;
@@ -2217,6 +2273,11 @@ body.android-app.tab-library-active .spotify-mobile-header {
   flex-shrink: 0 !important;
   cursor: pointer !important;
   user-select: none !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.spotify-mob-user-avatar:active {
+  transform: scale(0.92) !important;
 }
 
 .spotify-mob-filter-pills {
@@ -2226,6 +2287,7 @@ body.android-app.tab-library-active .spotify-mobile-header {
   overflow-x: auto !important;
   scrollbar-width: none !important;
   -webkit-overflow-scrolling: touch !important;
+  padding-bottom: 2px !important;
 }
 
 .spotify-mob-filter-pills::-webkit-scrollbar {
@@ -2233,37 +2295,44 @@ body.android-app.tab-library-active .spotify-mobile-header {
 }
 
 .mob-pill {
-  padding: 6px 16px !important;
+  padding: 6px 15px !important;
   border-radius: 20px !important;
-  background: #282828 !important;
-  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.07) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #d1d5db !important;
   font-size: 0.8rem !important;
-  font-weight: 700 !important;
-  border: none !important;
+  font-weight: 600 !important;
   cursor: pointer !important;
   white-space: nowrap !important;
   font-family: inherit !important;
+  transition: all 0.2s ease !important;
+}
+
+.mob-pill.active {
+  background: #ffffff !important;
+  color: #0e1812 !important;
+  font-weight: 800 !important;
+  border-color: #ffffff !important;
+  box-shadow: 0 2px 10px rgba(74, 222, 128, 0.25) !important;
 }
 
 .mob-login-pill-btn {
-  margin-left: auto !important;
-  background: #ffffff !important;
-  color: #000000 !important;
+  background: linear-gradient(135deg, #183927 0%, #244b35 100%) !important;
+  color: #ffffff !important;
   font-size: 0.8rem !important;
-  font-weight: 800 !important;
+  font-weight: 700 !important;
   padding: 6px 14px !important;
   border-radius: 500px !important;
-  border: none !important;
+  border: 1px solid rgba(74, 222, 128, 0.35) !important;
   cursor: pointer !important;
   white-space: nowrap !important;
   flex-shrink: 0 !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
-  transition: transform 0.15s ease, background 0.15s ease !important;
+  box-shadow: 0 4px 14px rgba(36, 75, 53, 0.45) !important;
+  transition: transform 0.15s ease, opacity 0.15s ease !important;
 }
 
 .mob-login-pill-btn:active {
   transform: scale(0.95) !important;
-  background: #e0e0e0 !important;
 }
 
 .mob-login-pill-btn.hidden {
@@ -2464,15 +2533,18 @@ body.android-app.tab-library-active .spotify-mobile-header {
   /* 1:1 SPOTIFY MOBILE TOP BAR (Avatar + Category Pills) */
   .spotify-mobile-header {
     display: flex !important;
-    align-items: center !important;
+    flex-direction: column !important;
     gap: 12px !important;
-    padding: 36px 16px 10px 16px !important;
-    background: #121212 !important;
+    padding: 38px 16px 12px 16px !important;
+    background: linear-gradient(180deg, rgba(14, 26, 18, 0.98) 0%, rgba(8, 15, 11, 0.96) 100%) !important;
+    border-bottom: 1px solid rgba(74, 222, 128, 0.12) !important;
     width: 100% !important;
     box-sizing: border-box !important;
     position: sticky !important;
     top: 0 !important;
     z-index: 100 !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
   }
 
   body.tab-search-active .spotify-mobile-header,

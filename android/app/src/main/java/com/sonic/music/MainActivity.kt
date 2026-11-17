@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var webView: WebView
     private var wakeLock: PowerManager.WakeLock? = null
     private var isPlaying: Boolean = false
-    private var currentTitle: String = "SONiC Music"
+    private var currentTitle: String = "clover."
     private var currentArtist: String = "100% Free Full Music"
     private var currentArtworkBitmap: Bitmap? = null
 
@@ -300,7 +300,7 @@ class MainActivity : ComponentActivity() {
             .setSmallIcon(R.drawable.ic_launcher)
             .setContentTitle(currentTitle)
             .setContentText(currentArtist)
-            .setSubText("SONiC Music")
+            .setSubText("clover.")
             .setContentIntent(openPendingIntent)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setOngoing(isPlaying)
@@ -319,10 +319,10 @@ class MainActivity : ComponentActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "SONiC Music Playback",
+                "clover. Playback",
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "Background audio controls for SONiC Music"
+                description = "Background audio controls for clover."
                 setShowBadge(false)
             }
             val manager = getSystemService(NotificationManager::class.java)
