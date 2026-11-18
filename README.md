@@ -1,12 +1,14 @@
-# SONiC Music: Reverse-Engineered Architecture & Universal Audio Streaming Engine
+# clover. - Music for every moment.
+
+## Reverse-Engineered Architecture & Universal Audio Streaming Engine
 
 ## Abstract & Overview
 
-SONiC is a high-performance, zero-loss hybrid music streaming engine and player built for both the Web (PWA) and Native Android (Media3 foreground service). 
+**clover.** is a high-performance, zero-loss hybrid music streaming engine and player built for both the Web (PWA) and Native Android (Media3 foreground service). 
 
 The genesis of this project stems from an in-depth reverse-engineering investigation of modern proprietary music streaming architectures (specifically Spotify) conducted through **REA (Reverse-Engineering-Anything)**. By deconstructing Spotify's binary structures, network communications, client-side caching, dynamic feature delivery mechanisms, and digital rights management (DRM) pipelines, we designed an open, resilient, and multi-catalog music engine.
 
-SONiC solves the "catalog fragmentation" dilemma: proprietary platforms gate regional catalogs behind geographic licensing boundaries and closed DRM containers, while single-source open APIs fail on regional languages (e.g. Vietnamese V-Pop, Japanese J-Pop, Russian indie, Latin regional). SONiC implements a resilient, multi-catalog resolution engine that guarantees worldwide song availability with 320 kbps audio quality, live synchronized lyrics, and offline capabilities.
+**clover.** solves the "catalog fragmentation" dilemma: proprietary platforms gate regional catalogs behind geographic licensing boundaries and closed DRM containers, while single-source open APIs fail on regional languages (e.g. Vietnamese V-Pop, Japanese J-Pop, Russian indie, Latin regional). **clover.** implements a resilient, multi-catalog resolution engine that guarantees worldwide song availability with 320 kbps audio quality, live synchronized lyrics, and offline capabilities.
 
 ---
 
@@ -87,13 +89,13 @@ One of the key engineering questions investigated was: **How does Spotify roll o
 
 ---
 
-## Part 2: SONiC Music Architecture & Innovations
+## Part 2: clover. System Architecture & Innovations
 
-Taking the architectural lessons from reverse-engineering Spotify, **SONiC** was built from the ground up to eliminate proprietary platform lock-in, bypass geo-licensing blocks, and deliver an unrestricted, high-fidelity audio experience.
+Taking the architectural lessons from reverse-engineering Spotify, **clover.** was built from the ground up to eliminate proprietary platform lock-in, bypass geo-licensing blocks, and deliver an unrestricted, high-fidelity audio experience.
 
 ```
 +-----------------------------------------------------------------------------------+
-|                         SONiC SYSTEM ARCHITECTURE                                 |
+|                        clover. SYSTEM ARCHITECTURE                                |
 +-----------------------------------------------------------------------------------+
 |                                                                                   |
 |   +---------------------------------------------------------------------------+   |
@@ -147,8 +149,8 @@ Single-provider architectures inevitably fail because music rights are fragmente
 - **Spotify** restricts playback behind Widevine DRM and regional geofences.
 - **YouTube** throttles automated non-browser clients with aggressive IP reputation checks.
 
-### The SONiC Solution
-SONiC coordinates a unified, 3-tier global resolver algorithm that guarantees **100% discovery rate across all 12 major musical regions of the world**:
+### The clover. Solution
+**clover.** coordinates a unified, 3-tier global resolver algorithm that guarantees **100% discovery rate across all 12 major musical regions of the world**:
 
 ```
                   Search Query: "薄ら氷心中" or "See Tinh"
@@ -307,7 +309,7 @@ npx vercel --prod dist
 
 ## Part 8: Technical Comparison
 
-| Feature | Spotify Official | Standard Web Players | SONiC Music |
+| Feature | Spotify Official | Standard Web Players | clover. |
 |---|---|---|---|
 | **Audio Format** | Ogg Vorbis / AAC (DRM Encrypted) | Low-bitrate MP3 / Previews | 320 kbps High-Fidelity Audio |
 | **Catalog Scope** | Gated by Regional Licensing | Single API (Frequent 404s) | 3-Tier Multi-Catalog Global Resolver |

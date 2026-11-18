@@ -1,12 +1,12 @@
 {
-  "name": "sonic-music-app",
+  "name": "clover-music",
   "version": "1.0.0",
-  "description": "SONiC - Real-time Full-Length Lossless Music Streaming & Offline Web Player",
+  "description": "clover. - Music for every moment. Real-time Full-Length Lossless Audio Streaming & Offline Player",
   "main": "server.cjs",
   "scripts": {
     "start": "node server.cjs"
   },
-  "keywords": ["music", "spotify-clone", "audio", "streaming"],
+  "keywords": ["music", "clover", "spotify-clone", "audio", "streaming", "lossless"],
   "author": "Vishal",
   "license": "MIT"
 }

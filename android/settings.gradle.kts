@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SonicMusic"
+rootProject.name = "clover"
 include(":app")
